@@ -26,11 +26,39 @@ export class DataSynchronizationTaskRunner {
 
     public async run(input: IDataSynchronizationInput) {
         /**
-         * First we check if we need to sync Elasticsearch.
+         * First we go through the regular DynamoDB table and insert the data which is missing in the go Elasticsearch table.
          */
         //
-        if (!input.elasticsearchToDynamoDb?.finished) {
-            const sync = this.factories.createElasticsearchToDynamoDb({
+        if (!input.dynamoDb?.finished) {
+            const sync = this.factories.createDynamoDbSync({
+                manager: this.manager
+            });
+            try {
+                return await sync.run(input);
+            } catch (ex) {
+                return this.manager.response.error(ex);
+            }
+        }
+        /**
+         * Then we go through the Elasticsearch table and insert the data we are missing in the Elasticsearch.
+         */
+        //
+        else if (!input.dynamoDbElasticsearch?.finished) {
+            const sync = this.factories.createDynamoDbElasticsearchSync({
+                manager: this.manager
+            });
+            try {
+                return await sync.run(input);
+            } catch (ex) {
+                return this.manager.response.error(ex);
+            }
+        }
+        /**
+         * Then we go through the Elasticsearch and delete records which do not exist in the Elasticsearch table.
+         */
+        //
+        else if (!input.elasticsearchToDynamoDb?.finished) {
+            const sync = this.factories.createElasticsearchToDynamoDbSync({
                 manager: this.manager,
                 indexManager: this.indexManager,
                 synchronize: new ElasticsearchSynchronize({
@@ -48,36 +76,17 @@ export class DataSynchronizationTaskRunner {
             }
         }
         /**
-         * Then we go through the DynamoDB to Elasticsearch table.
+         * At this point, all the keys in the input must have finished set to true. If not, something went very wrong.
          */
-        //
-        else if (!input.dynamoDbElasticsearch?.finished) {
-            const sync = this.factories.createDynamoDbElasticsearch({
-                manager: this.manager
-            });
-            try {
-                return await sync.run(input);
-            } catch (ex) {
-                return this.manager.response.error(ex);
+        for (const key in input) {
+            const value = input[key as keyof IDataSynchronizationInput];
+            if (!value?.finished) {
+                return this.manager.response.error(`Task "${key}" did not finish.`);
             }
         }
         /**
-         * Then we will go through the DynamoDB.
+         * We are done.
          */
-        //
-        else if (!input.dynamoDb?.finished) {
-            const sync = this.factories.createDynamoDb({
-                manager: this.manager
-            });
-            try {
-                return await sync.run(input);
-            } catch (ex) {
-                return this.manager.response.error(ex);
-            }
-        }
-        /**
-         * If we reach this point, something went wrong.
-         */
-        return this.manager.response.error("Should not reach this point.");
+        return this.manager.response.done();
     }
 }

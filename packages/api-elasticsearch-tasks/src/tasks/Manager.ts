@@ -5,7 +5,7 @@ import { Context, IManager } from "~/types";
 import { createEntry } from "~/definitions/entry";
 import { Entity } from "@webiny/db-dynamodb/toolbox";
 import { ITaskResponse } from "@webiny/tasks/response/abstractions";
-import { ITaskManagerStore } from "@webiny/tasks/runner/abstractions";
+import { IIsCloseToTimeoutCallable, ITaskManagerStore } from "@webiny/tasks/runner/abstractions";
 import {
     batchReadAll,
     BatchReadItem,
@@ -19,7 +19,7 @@ export interface ManagerParams<T> {
     context: Context;
     documentClient?: DynamoDBDocument;
     elasticsearchClient?: Client;
-    isCloseToTimeout: () => boolean;
+    isCloseToTimeout: IIsCloseToTimeoutCallable;
     isAborted: () => boolean;
     response: ITaskResponse;
     store: ITaskManagerStore<T>;
@@ -31,7 +31,7 @@ export class Manager<T> implements IManager<T> {
     public readonly elasticsearch: Client;
     public readonly context: Context;
     public readonly table: ReturnType<typeof createTable>;
-    public readonly isCloseToTimeout: () => boolean;
+    public readonly isCloseToTimeout: IIsCloseToTimeoutCallable;
     public readonly isAborted: () => boolean;
     public readonly response: ITaskResponse;
     public readonly store: ITaskManagerStore<T>;

@@ -1,12 +1,13 @@
 import { Entity } from "@webiny/db-dynamodb/toolbox";
 import { NonEmptyArray } from "@webiny/api/types";
 import { IRegistryItem } from "@webiny/db";
-import { EntityType } from "./getElasticsearchEntityType";
+import { EntityType } from "./getElasticsearchEntityTypeByIndex";
 import { Context } from "~/types";
 
 export interface IGetRegularEntityParams {
     type: EntityType | unknown;
     context: Context;
+    tags?: string[];
 }
 
 const createPredicate = (app: string, tags: NonEmptyArray<string>) => {
@@ -15,23 +16,36 @@ const createPredicate = (app: string, tags: NonEmptyArray<string>) => {
     };
 };
 
-export const getRegularEntity = (params: IGetRegularEntityParams) => {
-    const { type, context } = params;
+export const getRegularEntity = (params: IGetRegularEntityParams): IRegistryItem<Entity> | null => {
+    const { type, context, tags = [] } = params;
 
-    const getByPredicate = (predicate: (item: IRegistryItem) => boolean) => {
-        const item = context.db.registry.getOneItem<Entity>(predicate);
-        return item.item;
+    const getByPredicate = (predicate: (item: IRegistryItem<Entity>) => boolean) => {
+        return context.db.registry.getItem<Entity>(predicate);
     };
 
     switch (type) {
         case EntityType.CMS:
-            return getByPredicate(createPredicate("cms", ["regular"]));
+            return getByPredicate(createPredicate("cms", ["regular", ...tags]));
         case EntityType.PAGE_BUILDER:
-            return getByPredicate(createPredicate("pb", ["regular"]));
+            return getByPredicate(createPredicate("pb", ["regular", ...tags]));
         case EntityType.FORM_BUILDER:
-            return getByPredicate(createPredicate("fb", ["regular"]));
+            return getByPredicate(createPredicate("fb", ["regular", ...tags]));
         case EntityType.FORM_BUILDER_SUBMISSION:
-            return getByPredicate(createPredicate("fb", ["regular", "form-submission"]));
+            return getByPredicate(createPredicate("fb", ["regular", "form-submission", ...tags]));
     }
-    throw new Error(`Unknown entity type "${type}".`);
+    return null;
+};
+
+export interface IListRegularEntitiesParams {
+    context: Pick<Context, "db">;
+}
+
+export const listRegularEntities = (
+    params: IListRegularEntitiesParams
+): IRegistryItem<Entity>[] => {
+    const { context } = params;
+
+    return context.db.registry.getItems<Entity>(item => {
+        return item.tags.includes("regular");
+    });
 };

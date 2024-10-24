@@ -8,7 +8,7 @@ jest.mock("~/tasks/dataSynchronization/createFactories", () => {
     return {
         createFactories: (): IFactories => {
             return {
-                createElasticsearchToDynamoDb: ({ manager }) => {
+                createElasticsearchToDynamoDbSync: ({ manager }) => {
                     return {
                         run: async input => {
                             return manager.response.continue({
@@ -20,7 +20,7 @@ jest.mock("~/tasks/dataSynchronization/createFactories", () => {
                         }
                     };
                 },
-                createDynamoDbElasticsearch: ({ manager }) => {
+                createDynamoDbElasticsearchSync: ({ manager }) => {
                     return {
                         run: async input => {
                             return manager.response.continue({
@@ -32,7 +32,7 @@ jest.mock("~/tasks/dataSynchronization/createFactories", () => {
                         }
                     };
                 },
-                createDynamoDb: ({ manager }) => {
+                createDynamoDbSync: ({ manager }) => {
                     return {
                         run: async () => {
                             return manager.response.done("DynamoDB sync finished.");

@@ -5,7 +5,7 @@ export enum EntityType {
     FORM_BUILDER_SUBMISSION = "form-builder-submission"
 }
 
-export const getElasticsearchEntityType = (index: string): EntityType => {
+export const getElasticsearchEntityTypeByIndex = (index: string): EntityType => {
     if (index.includes("-headless-cms-")) {
         return EntityType.CMS;
     } else if (index.includes("-page-builder-")) {

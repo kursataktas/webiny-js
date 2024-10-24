@@ -1,12 +1,12 @@
 import { Entity } from "@webiny/db-dynamodb/toolbox";
 import { NonEmptyArray } from "@webiny/api/types";
 import { IRegistryItem } from "@webiny/db";
-import { EntityType } from "./getElasticsearchEntityType";
+import { EntityType } from "./getElasticsearchEntityTypeByIndex";
 import { Context } from "~/types";
 
 export interface IGetElasticsearchEntityParams {
     type: EntityType | unknown;
-    context: Context;
+    context: Pick<Context, "db">;
 }
 
 const createPredicate = (app: string, tags: NonEmptyArray<string>) => {
@@ -15,12 +15,13 @@ const createPredicate = (app: string, tags: NonEmptyArray<string>) => {
     };
 };
 
-export const getElasticsearchEntity = (params: IGetElasticsearchEntityParams) => {
+export const getElasticsearchEntity = (
+    params: IGetElasticsearchEntityParams
+): IRegistryItem<Entity> | null => {
     const { type, context } = params;
 
     const getByPredicate = (predicate: (item: IRegistryItem) => boolean) => {
-        const item = context.db.registry.getOneItem<Entity>(predicate);
-        return item.item;
+        return context.db.registry.getItem<Entity>(predicate);
     };
 
     switch (type) {
@@ -33,5 +34,19 @@ export const getElasticsearchEntity = (params: IGetElasticsearchEntityParams) =>
         case EntityType.FORM_BUILDER_SUBMISSION:
             return getByPredicate(createPredicate("fb", ["es", "form-submission"]));
     }
-    throw new Error(`Unknown entity type "${type}".`);
+    return null;
+};
+
+export interface IListElasticsearchEntitiesParams {
+    context: Pick<Context, "db">;
+}
+
+export const listElasticsearchEntities = (
+    params: IListElasticsearchEntitiesParams
+): IRegistryItem<Entity>[] => {
+    const { context } = params;
+
+    return context.db.registry.getItems<Entity>(item => {
+        return item.tags.includes("es");
+    });
 };

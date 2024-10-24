@@ -2,7 +2,7 @@ import { batchReadAll } from "@webiny/db-dynamodb";
 import { createSynchronizationBuilder } from "@webiny/api-dynamodb-to-elasticsearch";
 import {
     getElasticsearchEntity,
-    getElasticsearchEntityType
+    getElasticsearchEntityTypeByIndex
 } from "~/tasks/dataSynchronization/entities";
 import { ITimer } from "@webiny/handler-aws";
 import { Context } from "~/types";
@@ -39,15 +39,18 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
         }
 
         const entity = this.getEntity(index);
+        if (!entity) {
+            throw new Error(`Missing entity for index "${index}".`);
+        }
 
         const dynamoDbItems = await batchReadAll({
             items: items.map(item => {
-                return entity.getBatch({
+                return entity.item.getBatch({
                     PK: item.PK,
                     SK: item.SK
                 });
             }),
-            table: entity.table
+            table: entity.item.table
         });
 
         const elasticsearchSync = createSynchronizationBuilder({
@@ -79,7 +82,7 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
     }
 
     private getEntity(index: string): ReturnType<typeof getElasticsearchEntity> {
-        const type = getElasticsearchEntityType(index);
+        const type = getElasticsearchEntityTypeByIndex(index);
         return getElasticsearchEntity({
             type,
             context: this.context

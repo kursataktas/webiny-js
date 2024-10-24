@@ -2,7 +2,8 @@ import { ITaskResponseResult } from "@webiny/tasks";
 import {
     IDataSynchronizationManager,
     IDynamoDbElasticsearchSyncParams,
-    ISynchronization
+    ISynchronization,
+    ISynchronizationRunResult
 } from "../types";
 
 export class DynamoDbElasticsearchSynchronization implements ISynchronization {
@@ -12,7 +13,7 @@ export class DynamoDbElasticsearchSynchronization implements ISynchronization {
         this.manager = params.manager;
     }
 
-    public async run(): Promise<ITaskResponseResult> {
+    public async run(): Promise<ISynchronizationRunResult> {
         return this.manager.response.error(new Error("Not implemented"));
     }
 }

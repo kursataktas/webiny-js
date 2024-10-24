@@ -2,11 +2,11 @@ import {
     IDataSynchronizationInput,
     IDataSynchronizationManager,
     IElasticsearchSyncParams,
-    ISynchronization
+    ISynchronization,
+    ISynchronizationRunResult
 } from "../types";
 import { IIndexManager } from "~/settings/types";
 import { NonEmptyArray } from "@webiny/api/types";
-import { ITaskResponseResult } from "@webiny/tasks";
 import { IElasticsearchSynchronize } from "./abstractions/ElasticsearchSynchronize";
 import { IElasticsearchFetcher } from "./abstractions/ElasticsearchFetcher";
 
@@ -23,16 +23,14 @@ export class ElasticsearchToDynamoDbSynchronization implements ISynchronization 
         this.fetcher = params.fetcher;
     }
 
-    public async run(input: IDataSynchronizationInput): Promise<ITaskResponseResult> {
+    public async run(input: IDataSynchronizationInput): Promise<ISynchronizationRunResult> {
         const lastIndex = input.elasticsearchToDynamoDb?.index;
         let cursor = input.elasticsearchToDynamoDb?.cursor;
         const indexes = await this.fetchAllIndexes();
 
         let next = 0;
-        if (lastIndex && cursor) {
+        if (lastIndex) {
             next = indexes.findIndex(index => index === lastIndex);
-        } else if (lastIndex) {
-            next = indexes.findIndex(index => index === lastIndex) + 1;
         }
 
         let currentIndex = indexes[next];
@@ -40,7 +38,13 @@ export class ElasticsearchToDynamoDbSynchronization implements ISynchronization 
         while (currentIndex) {
             if (this.manager.isAborted()) {
                 return this.manager.response.aborted();
-            } else if (this.manager.isCloseToTimeout()) {
+            }
+            /**
+             * We will put 180 seconds because we are writing to the Elasticsearch/OpenSearch directly.
+             * We want to leave enough time for possible retries.
+             */
+            //
+            else if (this.manager.isCloseToTimeout(180)) {
                 return this.manager.response.continue({
                     ...input,
                     elasticsearchToDynamoDb: {
@@ -77,7 +81,6 @@ export class ElasticsearchToDynamoDbSynchronization implements ISynchronization 
         return this.manager.response.continue({
             ...input,
             elasticsearchToDynamoDb: {
-                ...input.elasticsearchToDynamoDb,
                 finished: true
             }
         });

@@ -5,13 +5,13 @@ import { DynamoDbSynchronization } from "./dynamoDb/DynamoDbSynchronization";
 
 export const createFactories = (): IFactories => {
     return {
-        createElasticsearchToDynamoDb: params => {
+        createElasticsearchToDynamoDbSync: params => {
             return new ElasticsearchToDynamoDbSynchronization(params);
         },
-        createDynamoDbElasticsearch: params => {
+        createDynamoDbElasticsearchSync: params => {
             return new DynamoDbElasticsearchSynchronization(params);
         },
-        createDynamoDb: params => {
+        createDynamoDbSync: params => {
             return new DynamoDbSynchronization(params);
         }
     };

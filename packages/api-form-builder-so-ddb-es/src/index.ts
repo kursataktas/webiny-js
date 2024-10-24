@@ -142,22 +142,22 @@ export const createFormBuilderStorageOperations: FormBuilderStorageOperationsFac
             context.db.registry.register({
                 item: entities.form,
                 app: "fb",
-                tags: ["regular", "form"]
+                tags: ["regular", "form", entities.form.name]
             });
             context.db.registry.register({
                 item: entities.esForm,
                 app: "fb",
-                tags: ["es", "form"]
+                tags: ["es", "form", entities.esForm.name]
             });
             context.db.registry.register({
                 item: entities.submission,
                 app: "fb",
-                tags: ["regular", "form-submission"]
+                tags: ["regular", "form-submission", entities.submission.name]
             });
             context.db.registry.register({
                 item: entities.esSubmission,
                 app: "fb",
-                tags: ["es", "form-submission"]
+                tags: ["es", "form-submission", entities.esSubmission.name]
             });
 
             const types: string[] = [

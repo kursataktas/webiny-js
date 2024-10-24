@@ -1,3 +1,4 @@
 export * from "./getRegularEntity";
 export * from "./getElasticsearchEntity";
-export * from "./getElasticsearchEntityType";
+export * from "./getElasticsearchEntityTypeByIndex";
+export * from "./getTable";

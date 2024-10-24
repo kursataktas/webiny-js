@@ -1,7 +1,11 @@
 import { IManager } from "~/types";
 import { PrimitiveValue } from "@webiny/api-elasticsearch/types";
 import { IIndexManager } from "~/settings/types";
-import { ITaskResponseResult } from "@webiny/tasks";
+import {
+    ITaskResponseAbortedResult,
+    ITaskResponseContinueResult,
+    ITaskResponseErrorResult
+} from "@webiny/tasks";
 import { AttributeDefinition } from "@webiny/db-dynamodb/toolbox";
 import { IElasticsearchSynchronize } from "~/tasks/dataSynchronization/elasticsearch/abstractions/ElasticsearchSynchronize";
 import { IElasticsearchFetcher } from "~/tasks/dataSynchronization/elasticsearch/abstractions/ElasticsearchFetcher";
@@ -16,14 +20,26 @@ export interface IDataSynchronizationInputElasticsearchToDynamoDbValue
     cursor?: PrimitiveValue[];
 }
 
+export interface IDataSynchronizationInputDynamoDbValue extends IDataSynchronizationInputValue {
+    keys?: {
+        PK: string;
+        SK: string;
+    };
+}
+
 export interface IDataSynchronizationInput {
     elasticsearchToDynamoDb?: IDataSynchronizationInputElasticsearchToDynamoDbValue;
     dynamoDbElasticsearch?: IDataSynchronizationInputValue;
-    dynamoDb?: IDataSynchronizationInputValue;
+    dynamoDb?: IDataSynchronizationInputDynamoDbValue;
 }
 
+export type ISynchronizationRunResult =
+    | ITaskResponseContinueResult<IDataSynchronizationInput>
+    | ITaskResponseErrorResult
+    | ITaskResponseAbortedResult;
+
 export interface ISynchronization {
-    run(input: IDataSynchronizationInput): Promise<ITaskResponseResult>;
+    run(input: IDataSynchronizationInput): Promise<ISynchronizationRunResult>;
 }
 
 export interface IElasticsearchSyncParams {
@@ -54,9 +70,18 @@ export interface IDynamoDbSyncFactory {
 }
 
 export interface IFactories {
-    createElasticsearchToDynamoDb: IElasticsearchSyncFactory;
-    createDynamoDbElasticsearch: IDynamoDbElasticsearchSyncFactory;
-    createDynamoDb: IDynamoDbSyncFactory;
+    /**
+     * Delete all the records which are in the Elasticsearch but not in the Elasticsearch DynamoDB table.
+     */
+    createElasticsearchToDynamoDbSync: IElasticsearchSyncFactory;
+    /**
+     *
+     */
+    createDynamoDbElasticsearchSync: IDynamoDbElasticsearchSyncFactory;
+    /**
+     * Insert all records which exist in regular DynamoDB table but not in the Elasticsearch DynamoDB table.
+     */
+    createDynamoDbSync: IDynamoDbSyncFactory;
 }
 
 export type IDataSynchronizationManager = IManager<IDataSynchronizationInput>;

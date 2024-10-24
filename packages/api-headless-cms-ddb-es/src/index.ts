@@ -127,12 +127,12 @@ export const createStorageOperations: StorageOperationsFactory = params => {
             context.db.registry.register({
                 item: entities.entries,
                 app: "cms",
-                tags: ["regular"]
+                tags: ["regular", entities.entries.name]
             });
             context.db.registry.register({
                 item: entities.entriesEs,
                 app: "cms",
-                tags: ["es"]
+                tags: ["es", entities.entriesEs.name]
             });
             /**
              * Attach the elasticsearch into context if it is not already attached.
