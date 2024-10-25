@@ -9,7 +9,7 @@ import { SliderPresenter } from "./SliderPresenter";
 /**
  * Slider Root
  */
-const SliderBaseRoot = React.forwardRef<
+const DecoratableSliderRoot = React.forwardRef<
     React.ElementRef<typeof SliderPrimitive.Root>,
     React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>
 >(({ className, ...props }, ref) => (
@@ -23,20 +23,20 @@ const SliderBaseRoot = React.forwardRef<
     />
 ));
 
-SliderBaseRoot.displayName = SliderPrimitive.Root.displayName;
+DecoratableSliderRoot.displayName = SliderPrimitive.Root.displayName;
 
-const SliderRoot = makeDecoratable("SliderRoot", SliderBaseRoot);
+const SliderRoot = makeDecoratable("SliderRoot", DecoratableSliderRoot);
 
 /**
  * Slider Track
  */
-const SliderBaseTrack = () => (
+const DecoratableSliderTrack = () => (
     <SliderPrimitive.Track className="relative h-0.5 w-full grow overflow-hidden rounded-full bg-secondary">
         <SliderPrimitive.Range className="absolute h-full bg-primary data-[disabled]:opacity-50" />
     </SliderPrimitive.Track>
 );
 
-const SliderTrack = makeDecoratable("SliderTrack", SliderBaseTrack);
+const SliderTrack = makeDecoratable("SliderTrack", DecoratableSliderTrack);
 
 /**
  * Slider Tooltip
@@ -62,7 +62,7 @@ type SliderTooltipProps = VariantProps<typeof sliderTooltipVariants> & {
     tooltipSide?: "top" | "bottom";
 };
 
-const SliderBaseTooltip = ({ value, showTooltip, tooltipSide }: SliderTooltipProps) => {
+const DecoratableSliderTooltip = ({ value, showTooltip, tooltipSide }: SliderTooltipProps) => {
     if (!value || !showTooltip) {
         return null;
     }
@@ -70,21 +70,43 @@ const SliderBaseTooltip = ({ value, showTooltip, tooltipSide }: SliderTooltipPro
     return <div className={cn(sliderTooltipVariants({ side: tooltipSide }))}>{value}</div>;
 };
 
-const SliderTooltip = makeDecoratable("SliderTooltip", SliderBaseTooltip);
+const SliderTooltip = makeDecoratable("SliderTooltip", DecoratableSliderTooltip);
 
 /**
  * Slider Thumb
  */
 type SliderThumbProps = SliderTooltipProps;
 
-const SliderBaseThumb = ({ value, showTooltip, tooltipSide }: SliderThumbProps) => (
+const DecoratableSliderThumb = ({ value, showTooltip, tooltipSide }: SliderThumbProps) => (
     <SliderPrimitive.Thumb className="inline-block mt-1.5 h-4 w-4 rounded-full border-2 border-background bg-primary transition-colors outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
         <SliderTooltip showTooltip={showTooltip} value={value} tooltipSide={tooltipSide} />
     </SliderPrimitive.Thumb>
 );
 
-const SliderThumb = makeDecoratable("SliderThumb", SliderBaseThumb);
+const SliderThumb = makeDecoratable("SliderThumb", DecoratableSliderThumb);
 
+/**
+ * ComposableSlider
+ */
+interface ComposableSliderProps {
+    sliderVm: SliderPrimitive.SliderProps;
+    thumbVm: SliderThumbProps;
+}
+
+const DecoratorableComposableSlider = ({ sliderVm, thumbVm }: ComposableSliderProps) => {
+    return (
+        <SliderRoot {...sliderVm}>
+            <SliderTrack />
+            <SliderThumb {...thumbVm} />
+        </SliderRoot>
+    );
+};
+
+const ComposableSlider = makeDecoratable("ComposableSlider", DecoratorableComposableSlider);
+
+/**
+ * Slider
+ */
 interface SliderProps
     extends Omit<
         SliderPrimitive.SliderProps,
@@ -99,19 +121,22 @@ interface SliderProps
     value?: number;
 }
 
-const SliderBase = observer((props: SliderProps) => {
+const DecoratableSlider = observer((props: SliderProps) => {
     const { sliderVm, thumbVm } = React.useMemo(() => {
         return new SliderPresenter(props);
     }, [props]);
 
-    return (
-        <SliderRoot {...sliderVm}>
-            <SliderTrack />
-            <SliderThumb {...thumbVm} />
-        </SliderRoot>
-    );
+    return <ComposableSlider sliderVm={sliderVm} thumbVm={thumbVm} />;
 });
 
-const Slider = makeDecoratable("Slider", SliderBase);
+const Slider = makeDecoratable("Slider", DecoratableSlider);
 
-export { Slider, type SliderProps, type SliderTooltipProps, SliderRoot, SliderTrack, SliderThumb };
+export {
+    Slider,
+    ComposableSlider,
+    SliderRoot,
+    SliderTrack,
+    SliderThumb,
+    type SliderProps,
+    type SliderThumbProps
+};

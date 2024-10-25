@@ -1,22 +1,21 @@
 import { makeAutoObservable } from "mobx";
 import omit from "lodash/omit";
 import { SliderProps as BaseSliderProps } from "@radix-ui/react-slider";
-import { SliderProps, SliderTooltipProps } from "./Slider";
+import { SliderProps, SliderThumbProps } from "./Slider";
 
 interface ISliderPresenter {
     get sliderVm(): BaseSliderProps;
-    get thumbVm(): SliderTooltipProps;
+    get thumbVm(): SliderThumbProps;
 }
 
 class SliderPresenter implements ISliderPresenter {
-    private readonly props: SliderProps;
     private showTooltip: boolean;
     private localValue: number;
 
-    constructor(props: SliderProps) {
-        this.props = props;
+    constructor(private props: SliderProps) {
+        const { defaultValue, value, min = 0 } = props;
+        this.localValue = defaultValue ?? value ?? min;
         this.showTooltip = false;
-        this.localValue = props.defaultValue ?? props.value ?? props.min ?? 0;
         makeAutoObservable(this);
     }
 
@@ -47,25 +46,17 @@ class SliderPresenter implements ISliderPresenter {
     }
 
     private onValueChange = (values: number[]) => {
-        this.localValue = values[0];
+        const [newValue] = values;
+        this.localValue = newValue;
         this.showTooltip = !!this.props.showTooltip;
-
-        if (!this.props.onValueChange) {
-            return;
-        }
-
-        return this.props.onValueChange(values[0]);
+        this.props.onValueChange?.(newValue);
     };
 
     private onValueCommit = (values: number[]): void => {
-        this.localValue = values[0];
+        const [newValue] = values;
+        this.localValue = newValue;
         this.showTooltip = false;
-
-        if (!this.props.onValueCommit) {
-            return;
-        }
-
-        return this.props.onValueCommit(values[0]);
+        this.props.onValueCommit?.(newValue);
     };
 
     private get thumbValue(): string | undefined {
