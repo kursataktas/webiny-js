@@ -8,7 +8,7 @@ jest.mock("~/tasks/dataSynchronization/createFactories", () => {
     return {
         createFactories: (): IFactories => {
             return {
-                createElasticsearchToDynamoDbSync: ({ manager }) => {
+                elasticsearchToDynamoDb: ({ manager }) => {
                     return {
                         run: async input => {
                             return manager.response.continue({
@@ -17,25 +17,6 @@ jest.mock("~/tasks/dataSynchronization/createFactories", () => {
                                     finished: true
                                 }
                             });
-                        }
-                    };
-                },
-                createDynamoDbElasticsearchSync: ({ manager }) => {
-                    return {
-                        run: async input => {
-                            return manager.response.continue({
-                                ...input,
-                                dynamoDbElasticsearch: {
-                                    finished: true
-                                }
-                            });
-                        }
-                    };
-                },
-                createDynamoDbSync: ({ manager }) => {
-                    return {
-                        run: async () => {
-                            return manager.response.done("DynamoDB sync finished.");
                         }
                     };
                 }
@@ -56,7 +37,7 @@ describe("data synchronization - elasticsearch", () => {
                 isPrivate: false,
                 title: "Data Synchronization",
                 description: "Synchronize data between Elasticsearch and DynamoDB",
-                maxIterations: 50,
+                maxIterations: 100,
                 disableDatabaseLogs: true,
                 fields: [],
                 run: expect.any(Function)
@@ -64,7 +45,7 @@ describe("data synchronization - elasticsearch", () => {
         });
     });
 
-    it("should run a task but end in error because of the input", async () => {
+    it("should run a task and end with error due to invalid flow", async () => {
         const handler = useHandler({});
 
         const context = await handler.rawHandle();
@@ -72,22 +53,18 @@ describe("data synchronization - elasticsearch", () => {
         const task = await context.tasks.createTask<IDataSynchronizationInput>({
             definitionId: DATA_SYNCHRONIZATION_TASK,
             input: {
-                elasticsearchToDynamoDb: {
-                    finished: true
-                },
-                dynamoDbElasticsearch: {
-                    finished: true
-                },
-                dynamoDb: {
-                    finished: true
-                }
+                // @ts-expect-error
+                flow: "unknownFlow"
             },
             name: "Data Sync Mock Task"
         });
 
         const runner = createRunner({
             context,
-            task: createDataSynchronization()
+            task: createDataSynchronization(),
+            onContinue: async () => {
+                return;
+            }
         });
 
         const result = await runner({
@@ -101,37 +78,28 @@ describe("data synchronization - elasticsearch", () => {
             tenant: "root",
             locale: "en-US",
             error: {
-                message: "Should not reach this point.",
+                message: `Invalid flow "unknownFlow". Allowed flows: elasticsearchToDynamoDb.`,
                 data: {
                     input: {
-                        dynamoDb: {
-                            finished: true
-                        },
-                        dynamoDbElasticsearch: {
-                            finished: true
-                        },
-                        elasticsearchToDynamoDb: {
-                            finished: true
-                        }
+                        flow: "unknownFlow"
                     }
                 }
             }
         });
-        /**
-         * Should not have more than one iteration.
-         */
         const taskCheck = await context.tasks.getTask(task.id);
         expect(taskCheck?.iterations).toEqual(1);
     });
 
-    it("should run a task and end with done from dynamodb sync", async () => {
+    it("should run a task and end with done", async () => {
         const handler = useHandler({});
 
         const context = await handler.rawHandle();
 
         const task = await context.tasks.createTask<IDataSynchronizationInput>({
             definitionId: DATA_SYNCHRONIZATION_TASK,
-            input: {},
+            input: {
+                flow: "elasticsearchToDynamoDb"
+            },
             name: "Data Sync Mock Task"
         });
 
@@ -153,13 +121,10 @@ describe("data synchronization - elasticsearch", () => {
             webinyTaskDefinitionId: DATA_SYNCHRONIZATION_TASK,
             tenant: "root",
             locale: "en-US",
-            message: "DynamoDB sync finished.",
+            message: undefined,
             output: undefined
         });
-        /**
-         * Should have more than one iteration.
-         */
         const taskCheck = await context.tasks.getTask(task.id);
-        expect(taskCheck?.iterations).toEqual(3);
+        expect(taskCheck?.iterations).toEqual(2);
     });
 });

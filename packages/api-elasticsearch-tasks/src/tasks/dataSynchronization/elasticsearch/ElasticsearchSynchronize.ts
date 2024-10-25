@@ -2,7 +2,9 @@ import { batchReadAll } from "@webiny/db-dynamodb";
 import { createSynchronizationBuilder } from "@webiny/api-dynamodb-to-elasticsearch";
 import {
     getElasticsearchEntity,
-    getElasticsearchEntityTypeByIndex
+    getElasticsearchEntityType,
+    getTable,
+    IGetElasticsearchEntityTypeParams
 } from "~/tasks/dataSynchronization/entities";
 import { ITimer } from "@webiny/handler-aws";
 import { Context } from "~/types";
@@ -17,6 +19,11 @@ export interface IElasticsearchSynchronizeParams {
     context: Context;
 }
 
+interface IDynamoDbItem {
+    PK: string;
+    SK: string;
+}
+
 export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
     private readonly timer: ITimer;
     private readonly context: Context;
@@ -29,31 +36,32 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
     public async execute(
         params: IElasticsearchSynchronizeExecuteParams
     ): Promise<IElasticsearchSynchronizeExecuteResponse> {
-        const { items, cursor, done, totalCount, index } = params;
-        if (items.length === 0 || totalCount === 0) {
+        const { items, done, index } = params;
+        if (items.length === 0) {
             return {
-                done: true,
-                cursor: undefined,
-                totalCount
+                done: true
             };
         }
 
-        const entity = this.getEntity(index);
-        if (!entity) {
-            throw new Error(`Missing entity for index "${index}".`);
-        }
-
-        const dynamoDbItems = await batchReadAll({
-            items: items.map(item => {
-                return entity.item.getBatch({
-                    PK: item.PK,
-                    SK: item.SK
-                });
-            }),
-            table: entity.item.table
+        const table = getTable({
+            type: "es",
+            context: this.context
         });
 
-        const elasticsearchSync = createSynchronizationBuilder({
+        const readableItems = items.map(item => {
+            const entity = this.getEntity(item);
+            return entity.item.getBatch({
+                PK: item.PK,
+                SK: item.SK
+            });
+        });
+
+        const tableItems = await batchReadAll<IDynamoDbItem>({
+            items: readableItems,
+            table
+        });
+
+        const elasticsearchSyncBuilder = createSynchronizationBuilder({
             timer: this.timer,
             context: this.context
         });
@@ -61,28 +69,30 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
          * We need to find the items we have in the Elasticsearch but not in the DynamoDB-Elasticsearch table.
          */
         for (const item of items) {
-            const exists = dynamoDbItems.some(ddbItem => {
+            const exists = tableItems.some(ddbItem => {
                 return ddbItem.PK === item.PK && ddbItem.SK === item.SK;
             });
             if (exists) {
                 continue;
             }
-            elasticsearchSync.delete({
+            elasticsearchSyncBuilder.delete({
                 index,
                 id: `${item.PK}:${item.SK}`
             });
         }
-        await elasticsearchSync.executeWithRetry();
+
+        const executeWithRetry = elasticsearchSyncBuilder.build();
+        await executeWithRetry();
 
         return {
-            done,
-            totalCount,
-            cursor
+            done
         };
     }
 
-    private getEntity(index: string): ReturnType<typeof getElasticsearchEntity> {
-        const type = getElasticsearchEntityTypeByIndex(index);
+    private getEntity(
+        params: IGetElasticsearchEntityTypeParams
+    ): ReturnType<typeof getElasticsearchEntity> {
+        const type = getElasticsearchEntityType(params);
         return getElasticsearchEntity({
             type,
             context: this.context

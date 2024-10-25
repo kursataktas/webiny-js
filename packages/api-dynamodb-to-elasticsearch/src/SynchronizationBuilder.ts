@@ -17,17 +17,17 @@ export type ISynchronizationBuilderExecuteWithRetryParams = Omit<
 export interface ISynchronizationBuilder {
     insert(params: IInsertOperationParams): void;
     delete(params: IDeleteOperationParams): void;
-    executeWithRetry(params?: ISynchronizationBuilderExecuteWithRetryParams): Promise<void>;
+    build: () => (params?: ISynchronizationBuilderExecuteWithRetryParams) => Promise<void>;
 }
 
 export interface ISynchronizationBuilderParams {
     timer: ITimer;
-    context: Context;
+    context: Pick<Context, "elasticsearch">;
 }
 
 export class SynchronizationBuilder implements ISynchronizationBuilder {
     private readonly timer: ITimer;
-    private readonly context: Context;
+    private readonly context: Pick<Context, "elasticsearch">;
     private readonly operations: IOperations;
 
     public constructor(params: ISynchronizationBuilderParams) {
@@ -48,17 +48,20 @@ export class SynchronizationBuilder implements ISynchronizationBuilder {
         return this.operations.delete(params);
     }
 
-    public async executeWithRetry(
-        params?: ISynchronizationBuilderExecuteWithRetryParams
-    ): Promise<void> {
-        await executeWithRetry({
-            ...params,
-            maxRunningTime: this.timer.getRemainingMilliseconds(),
-            timer: this.timer,
-            context: this.context,
-            operations: this.operations
-        });
-        this.operations.clear();
+    public build() {
+        return async (params?: ISynchronizationBuilderExecuteWithRetryParams) => {
+            if (this.operations.total === 0) {
+                return;
+            }
+            await executeWithRetry({
+                ...params,
+                maxRunningTime: this.timer.getRemainingMilliseconds(),
+                timer: this.timer,
+                context: this.context,
+                operations: this.operations
+            });
+            this.operations.clear();
+        };
     }
 }
 

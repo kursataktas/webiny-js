@@ -3,6 +3,8 @@ import { PrimitiveValue } from "@webiny/api-elasticsearch/types";
 export interface IElasticsearchFetcherFetchResponseItem {
     PK: string;
     SK: string;
+    _id: string;
+    index: string;
 }
 
 export interface IElasticsearchFetcherFetchParams {

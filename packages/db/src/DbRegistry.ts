@@ -1,7 +1,9 @@
 import { IRegistry, IRegistryItem, IRegistryRegisterParams } from "./types";
+import { GenericRecord } from "@webiny/api/types";
 
 export class DbRegistry implements IRegistry {
     private readonly items: IRegistryItem[] = [];
+    private readonly called: GenericRecord<string, number> = {};
 
     public register<T = unknown>(input: IRegistryRegisterParams<T>): void {
         const existing = this.items.some(item => {
@@ -21,13 +23,20 @@ export class DbRegistry implements IRegistry {
             }
             return item.tags.length === input.tags.length;
         });
+        const key = `${input.app}-${input.tags.join("-")}`;
         if (existing) {
-            throw new Error(
-                `Item with app "${input.app}" and tags "${input.tags.join(
-                    ", "
-                )}" is already registered.`
+            this.called[key]++;
+            console.log(
+                `Called registration ${input.app} (${input.tags.join(", ")}) #${this.called[key]}`
             );
+            return;
+            // throw new Error(
+            //     `Item with app "${input.app}" and tags "${input.tags.join(
+            //         ", "
+            //     )}" is already registered.`
+            // );
         }
+        this.called[key] = 1;
         this.items.push(input);
     }
 

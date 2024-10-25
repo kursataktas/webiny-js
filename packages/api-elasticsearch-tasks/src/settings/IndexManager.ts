@@ -15,6 +15,18 @@ export interface IListIndicesResponse {
     index: string;
 }
 
+const indexPrefix = process.env.ELASTIC_SEARCH_INDEX_PREFIX || "";
+const filterIndex = (item?: string) => {
+    if (!item) {
+        return false;
+    } else if (item.startsWith(".")) {
+        return false;
+    } else if (indexPrefix) {
+        return item.startsWith(indexPrefix);
+    }
+    return true;
+};
+
 export class IndexManager implements IIndexManager {
     private readonly client: Client;
     private readonly disable: DisableIndexing;
@@ -51,16 +63,7 @@ export class IndexManager implements IIndexManager {
             if (!Array.isArray(response.body)) {
                 return [];
             }
-            return response.body
-                .map(item => item.index)
-                .filter(item => {
-                    if (!item) {
-                        return false;
-                    } else if (item.startsWith(".")) {
-                        return false;
-                    }
-                    return true;
-                });
+            return response.body.map(item => item.index).filter(filterIndex);
         } catch (ex) {
             console.error(
                 JSON.stringify({

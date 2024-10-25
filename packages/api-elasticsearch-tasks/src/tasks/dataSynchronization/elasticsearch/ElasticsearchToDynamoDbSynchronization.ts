@@ -58,18 +58,17 @@ export class ElasticsearchToDynamoDbSynchronization implements ISynchronization 
             const result = await this.fetcher.fetch({
                 index: currentIndex,
                 cursor,
-                limit: 50
+                limit: 100
             });
 
-            const { done, cursor: newCursor } = await this.synchronize.execute({
+            const { done } = await this.synchronize.execute({
                 done: result.done,
                 index: currentIndex,
-                totalCount: result.totalCount,
                 items: result.items
             });
 
-            if (!done) {
-                cursor = newCursor;
+            if (!done && result.cursor) {
+                cursor = result.cursor;
                 continue;
             }
             cursor = undefined;

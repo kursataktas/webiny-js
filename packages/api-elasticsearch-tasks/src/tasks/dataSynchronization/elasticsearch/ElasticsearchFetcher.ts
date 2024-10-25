@@ -5,20 +5,12 @@ import {
     IElasticsearchFetcherFetchResponse,
     IElasticsearchFetcherFetchResponseItem
 } from "./abstractions/ElasticsearchFetcher";
-import {
-    ElasticsearchSearchResponse,
-    ElasticsearchSearchResponseBody
-} from "@webiny/api-elasticsearch/types";
+import { ElasticsearchSearchResponse, PrimitiveValue } from "@webiny/api-elasticsearch/types";
 import { shouldIgnoreEsResponseError } from "./shouldIgnoreEsResponseError";
 import { inspect } from "node:util";
 
 export interface IElasticsearchFetcherParams {
     client: Client;
-}
-
-interface ISearchResultHitsItemSource {
-    _id: string;
-    id: string;
 }
 
 export class ElasticsearchFetcher implements IElasticsearchFetcher {
@@ -32,11 +24,9 @@ export class ElasticsearchFetcher implements IElasticsearchFetcher {
         cursor,
         limit
     }: IElasticsearchFetcherFetchParams): Promise<IElasticsearchFetcherFetchResponse> {
-        let response: ElasticsearchSearchResponse<ISearchResultHitsItemSource>;
+        let response: ElasticsearchSearchResponse<undefined>;
         try {
-            response = await this.client.search<
-                ElasticsearchSearchResponseBody<ISearchResultHitsItemSource>
-            >({
+            response = await this.client.search({
                 index,
                 body: {
                     query: {
@@ -49,7 +39,8 @@ export class ElasticsearchFetcher implements IElasticsearchFetcher {
                     },
                     size: limit + 1,
                     track_total_hits: true,
-                    search_after: cursor
+                    search_after: cursor,
+                    _source: false
                 }
             });
         } catch (ex) {
@@ -76,18 +67,31 @@ export class ElasticsearchFetcher implements IElasticsearchFetcher {
         }
 
         const { hits, total } = response.body.hits;
-        if (hits.length > limit) {
-            hits.pop();
+        if (hits.length === 0) {
+            return {
+                done: true,
+                cursor: undefined,
+                totalCount: total.value,
+                items: []
+            };
         }
-        const nextCursor = hits.pop()?.sort;
+
+        const hasMoreItems = hits.length > limit;
+        let nextCursor: PrimitiveValue[] | undefined;
+        if (hasMoreItems) {
+            hits.pop();
+            nextCursor = hits.at(-1)?.sort;
+        }
         const items = hits.reduce<IElasticsearchFetcherFetchResponseItem[]>((collection, hit) => {
-            const [PK, SK] = hit._source._id.split(":");
+            const [PK, SK] = hit._id.split(":");
             if (!PK || !SK) {
                 return collection;
             }
             collection.push({
                 PK,
-                SK
+                SK,
+                _id: hit._id,
+                index: hit._index
             });
 
             return collection;

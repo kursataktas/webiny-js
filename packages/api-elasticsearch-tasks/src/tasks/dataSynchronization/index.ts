@@ -1,6 +1,9 @@
 import { createTaskDefinition } from "@webiny/tasks";
 import { Context, IElasticsearchTaskConfig } from "~/types";
-import { IDataSynchronizationInput } from "~/tasks/dataSynchronization/types";
+import {
+    IDataSynchronizationInput,
+    IDataSynchronizationManager
+} from "~/tasks/dataSynchronization/types";
 
 export const DATA_SYNCHRONIZATION_TASK = "dataSynchronization";
 
@@ -10,7 +13,7 @@ export const createDataSynchronization = (params?: IElasticsearchTaskConfig) => 
         isPrivate: false,
         title: "Data Synchronization",
         description: "Synchronize data between Elasticsearch and DynamoDB",
-        maxIterations: 50,
+        maxIterations: 100,
         disableDatabaseLogs: true,
         async run({ context, response, isCloseToTimeout, isAborted, store, input, timer }) {
             const { Manager } = await import(
@@ -45,7 +48,7 @@ export const createDataSynchronization = (params?: IElasticsearchTaskConfig) => 
 
             try {
                 const dataSynchronization = new DataSynchronizationTaskRunner({
-                    manager,
+                    manager: manager as unknown as IDataSynchronizationManager,
                     indexManager,
                     factories: createFactories()
                 });

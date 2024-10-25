@@ -30,8 +30,8 @@ export interface IExecuteParams {
     timer: ITimer;
     maxRunningTime: number;
     maxProcessorPercent: number;
-    context: Context;
-    operations: IOperations;
+    context: Pick<Context, "elasticsearch">;
+    operations: Pick<IOperations, "items" | "total">;
 }
 
 const getError = (item: BulkOperationsResponseBodyItem): string | null => {

@@ -25,40 +25,13 @@ export class DataSynchronizationTaskRunner {
     }
 
     public async run(input: IDataSynchronizationInput) {
+        this.validateFlow(input);
         /**
-         * First we go through the regular DynamoDB table and insert the data which is missing in the go Elasticsearch table.
+         * Go through the Elasticsearch and delete records which do not exist in the Elasticsearch table.
          */
         //
-        if (!input.dynamoDb?.finished) {
-            const sync = this.factories.createDynamoDbSync({
-                manager: this.manager
-            });
-            try {
-                return await sync.run(input);
-            } catch (ex) {
-                return this.manager.response.error(ex);
-            }
-        }
-        /**
-         * Then we go through the Elasticsearch table and insert the data we are missing in the Elasticsearch.
-         */
-        //
-        else if (!input.dynamoDbElasticsearch?.finished) {
-            const sync = this.factories.createDynamoDbElasticsearchSync({
-                manager: this.manager
-            });
-            try {
-                return await sync.run(input);
-            } catch (ex) {
-                return this.manager.response.error(ex);
-            }
-        }
-        /**
-         * Then we go through the Elasticsearch and delete records which do not exist in the Elasticsearch table.
-         */
-        //
-        else if (!input.elasticsearchToDynamoDb?.finished) {
-            const sync = this.factories.createElasticsearchToDynamoDbSync({
+        if (input.flow === "elasticsearchToDynamoDb" && !input.elasticsearchToDynamoDb?.finished) {
+            const sync = this.factories.elasticsearchToDynamoDb({
                 manager: this.manager,
                 indexManager: this.indexManager,
                 synchronize: new ElasticsearchSynchronize({
@@ -76,17 +49,21 @@ export class DataSynchronizationTaskRunner {
             }
         }
         /**
-         * At this point, all the keys in the input must have finished set to true. If not, something went very wrong.
-         */
-        for (const key in input) {
-            const value = input[key as keyof IDataSynchronizationInput];
-            if (!value?.finished) {
-                return this.manager.response.error(`Task "${key}" did not finish.`);
-            }
-        }
-        /**
          * We are done.
          */
         return this.manager.response.done();
+    }
+
+    private validateFlow(input: IDataSynchronizationInput): void {
+        if (!input.flow) {
+            throw new Error(`Missing "flow" in the input.`);
+        } else if (this.factories[input.flow]) {
+            return;
+        }
+        throw new Error(
+            `Invalid flow "${input.flow}". Allowed flows: ${Object.keys(this.factories).join(
+                ", "
+            )}.`
+        );
     }
 }

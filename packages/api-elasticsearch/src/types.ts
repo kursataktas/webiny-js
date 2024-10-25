@@ -77,6 +77,10 @@ export interface ElasticsearchQueryBuilderArgsPlugin {
  * Elasticsearch responses.
  */
 export interface ElasticsearchSearchResponseHit<T> {
+    _index: string;
+    _type: string;
+    _id: string;
+    _score: number | null;
     _source: T;
     sort: PrimitiveValue[];
 }
