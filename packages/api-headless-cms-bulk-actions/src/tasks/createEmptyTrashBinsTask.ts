@@ -1,12 +1,11 @@
 import { createTaskDefinition } from "@webiny/tasks";
+import { createDeleteEntry, createListDeletedEntries } from "~/useCases";
 import {
     HcmsBulkActionsContext,
     IEmptyTrashBinsInput,
     IEmptyTrashBinsOutput,
     IEmptyTrashBinsTaskParams
 } from "~/types";
-import { ChildTasksCleanup } from "~/useCases/internals";
-import { createDeleteEntry, createListDeletedEntries } from "~/useCases";
 
 const calculateDateTimeString = () => {
     // Retrieve the retention period from the environment variable WEBINY_TRASH_BIN_RETENTION_PERIOD_DAYS,
@@ -114,20 +113,6 @@ export const createEmptyTrashBinsTask = () => {
             return shouldContinue
                 ? response.continue({ ...input, executedTenantIds })
                 : response.done("Task done: emptied the trash bin for all registered models.");
-        },
-        onDone: async ({ context, task }) => {
-            /**
-             * We want to clean all child tasks and logs, which have no errors.
-             */
-            const childTasksCleanup = new ChildTasksCleanup();
-            try {
-                await childTasksCleanup.execute({
-                    context,
-                    task
-                });
-            } catch (ex) {
-                console.error("Error while cleaning `EmptyTrashBins` child tasks.", ex);
-            }
         }
     });
 };
