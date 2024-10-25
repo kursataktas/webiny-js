@@ -1,8 +1,10 @@
 import * as React from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { makeDecoratable } from "@webiny/react-composition";
-import { cn } from "~/utils";
 import { cva, type VariantProps } from "class-variance-authority";
+import { observer } from "mobx-react-lite";
+import { cn } from "~/utils";
+import { SliderPresenter } from "./SliderPresenter";
 
 /**
  * Slider Root
@@ -97,85 +99,19 @@ interface SliderProps
     value?: number;
 }
 
-const SliderBase = ({
-    defaultValue,
-    onValueChange,
-    onValueCommit,
-    showTooltip,
-    tooltipSide,
-    transformValue,
-    value,
-    ...props
-}: SliderProps) => {
-    // Initialize the local value with defaultValue or the provided value
-    const [localValue, setLocalValue] = React.useState(defaultValue || value);
-
-    // Manage local state to determine whether to show the tooltip or not
-    const [showTooltipValue, setShowTooltipValue] = React.useState(false);
-
-    // Handle changes to the slider value
-    const handleValueChange = React.useCallback(
-        (newValue: number[]) => {
-            // Show tooltip if 'showTooltip' prop is true
-            setShowTooltipValue(() => !!showTooltip);
-            // Update local value with the new value (the only in the array)
-            setLocalValue(newValue[0]);
-            // Trigger the optional 'onValueChange' callback with the new value
-            onValueChange?.(newValue[0]);
-        },
-        [onValueChange, showTooltip]
-    );
-
-    // Handle when the value is committed (e.g., on drag end)
-    const handleValueCommit = React.useCallback(
-        (newValue: number[]) => {
-            // Hide the tooltip when value commit happens
-            setShowTooltipValue(false);
-            // Trigger the optional 'onValueCommit' callback with the committed value
-            onValueCommit?.(newValue[0]);
-        },
-        [onValueCommit]
-    );
-
-    // Optionally transform the value using the 'transformValue' function
-    const handleValueTransform = React.useCallback(
-        (value?: number) => {
-            // If no value is provided, return early
-            if (!value) {
-                return;
-            }
-
-            // If 'transformValue' is not provided, return the value as a string
-            if (!transformValue) {
-                return String(value);
-            }
-
-            // Use 'transformValue' to transform the value and return it
-            return transformValue(value);
-        },
-        [transformValue]
-    );
+const SliderBase = observer((props: SliderProps) => {
+    const { sliderVm, thumbVm } = React.useMemo(() => {
+        return new SliderPresenter(props);
+    }, [props]);
 
     return (
-        <SliderRoot
-            {...props}
-            value={value !== undefined ? [value] : undefined}
-            defaultValue={defaultValue !== undefined ? [defaultValue] : undefined}
-            onValueChange={handleValueChange}
-            onValueCommit={handleValueCommit}
-        >
+        <SliderRoot {...sliderVm}>
             <SliderTrack />
-            <SliderThumb
-                value={handleValueTransform(localValue)}
-                tooltipSide={tooltipSide}
-                showTooltip={showTooltipValue}
-            />
+            <SliderThumb {...thumbVm} />
         </SliderRoot>
     );
-};
-
-SliderBase.displayName = SliderPrimitive.Root.displayName;
+});
 
 const Slider = makeDecoratable("Slider", SliderBase);
 
-export { Slider, type SliderProps, SliderRoot, SliderTrack, SliderThumb };
+export { Slider, type SliderProps, type SliderTooltipProps, SliderRoot, SliderTrack, SliderThumb };

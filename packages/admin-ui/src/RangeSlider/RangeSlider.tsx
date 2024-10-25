@@ -1,86 +1,29 @@
 import * as React from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { makeDecoratable } from "@webiny/react-composition";
+import { observer } from "mobx-react-lite";
 import { SliderRoot, SliderThumb, SliderTrack } from "~/Slider";
+import { RangeSliderPresenter } from "./RangeSliderPresenter";
 
 type RangeSliderProps = SliderPrimitive.SliderProps & {
-    onValueConvert?: (value: number) => string;
+    transformValues?: (value: number) => string;
     showTooltip?: boolean;
     tooltipSide?: "top" | "bottom";
 };
 
-const RangeSliderBase = ({
-    min = 0,
-    max = 100,
-    minStepsBetweenThumbs = 1,
-    defaultValue,
-    value,
-    onValueChange,
-    onValueCommit,
-    onValueConvert,
-    showTooltip,
-    tooltipSide,
-    ...props
-}: RangeSliderProps) => {
-    const [showTooltipValue, setShowTooltipValue] = React.useState(false);
-    const [localValues, setLocalValues] = React.useState(defaultValue || value || [min, max]);
-
-    const handleValueChange = React.useCallback(
-        (newValue: number[]) => {
-            setShowTooltipValue(() => !!showTooltip);
-            setLocalValues(newValue);
-            onValueChange?.(newValue);
-        },
-        [onValueChange, showTooltip]
-    );
-
-    const handleValueCommit = React.useCallback(
-        (newValue: number[]) => {
-            setShowTooltipValue(false);
-            onValueCommit?.(newValue);
-        },
-        [onValueCommit]
-    );
-
-    const handleValueConvert = React.useCallback(
-        (value?: number) => {
-            if (!value) {
-                return;
-            }
-
-            if (!onValueConvert) {
-                return String(value);
-            }
-
-            return onValueConvert(value);
-        },
-        [onValueConvert]
-    );
+const RangeSliderBase = observer((props: RangeSliderProps) => {
+    const { sliderVm, thumbsVm } = React.useMemo(() => {
+        return new RangeSliderPresenter(props);
+    }, [props]);
 
     return (
-        <SliderRoot
-            {...props}
-            min={min}
-            max={max}
-            defaultValue={defaultValue || [min, max]}
-            minStepsBetweenThumbs={minStepsBetweenThumbs}
-            onValueChange={handleValueChange}
-            onValueCommit={handleValueCommit}
-        >
+        <SliderRoot {...sliderVm}>
             <SliderTrack />
-            <SliderThumb
-                value={handleValueConvert(localValues[0])}
-                tooltipSide={tooltipSide}
-                showTooltip={showTooltipValue}
-            />
-            <SliderThumb
-                value={handleValueConvert(localValues[1])}
-                tooltipSide={tooltipSide}
-                showTooltip={showTooltipValue}
-            />
+            <SliderThumb {...thumbsVm} value={thumbsVm.values ? thumbsVm.values[0] : undefined} />
+            <SliderThumb {...thumbsVm} value={thumbsVm.values ? thumbsVm.values[1] : undefined} />
         </SliderRoot>
     );
-};
+});
 
 const RangeSlider = makeDecoratable("RangeSlider", RangeSliderBase);
 
