@@ -1,25 +1,24 @@
 import { makeAutoObservable } from "mobx";
 import omit from "lodash/omit";
 import { SliderProps as BaseSliderProps } from "@radix-ui/react-slider";
-import { SliderTooltipProps } from "~/Slider";
 import { RangeSliderProps } from "./RangeSlider";
+import { SliderThumbProps } from "~/Slider";
 
 interface IRangeSliderPresenter {
     get sliderVm(): BaseSliderProps;
-    get thumbsVm(): Omit<SliderTooltipProps, "value"> & {
+    get thumbsVm(): Omit<SliderThumbProps, "value"> & {
         values: string[] | undefined;
     };
 }
 
 class RangeSliderPresenter implements IRangeSliderPresenter {
-    private readonly props: RangeSliderProps;
     private showTooltip: boolean;
     private localValues: number[];
 
-    constructor(props: RangeSliderProps) {
-        this.props = props;
+    constructor(private props: RangeSliderProps) {
+        const { defaultValue, value, min = 0, max = 100 } = props;
         this.showTooltip = false;
-        this.localValues = props.defaultValue ?? props.value ?? [props.min ?? 0, props.max ?? 100];
+        this.localValues = defaultValue ?? value ?? [min, max];
         makeAutoObservable(this);
     }
 
