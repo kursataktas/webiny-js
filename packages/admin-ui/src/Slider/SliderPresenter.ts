@@ -59,16 +59,10 @@ class SliderPresenter implements ISliderPresenter {
         this.props.onValueCommit?.(newValue);
     };
 
-    private get thumbValue(): string | undefined {
-        if (!this.localValue) {
-            return;
-        }
-
-        if (!this.props.transformValue) {
-            return String(this.localValue);
-        }
-
-        return this.props.transformValue(this.localValue);
+    private get thumbValue(): string {
+        return this.props.transformValue
+            ? this.props.transformValue(this.localValue)
+            : String(this.localValue);
     }
 }
 

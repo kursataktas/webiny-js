@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import omit from "lodash/omit";
 import { autorun } from "mobx";
 import { SliderProps } from "./Slider";
 import { SliderPresenter } from "~/Slider";
@@ -6,7 +7,7 @@ import { FormSliderPresenter } from "./SliderPresenter";
 
 export const useSlider = (props: SliderProps) => {
     const presenter = useMemo(() => {
-        const sliderPresenter = new SliderPresenter(props);
+        const sliderPresenter = new SliderPresenter(omit(props, ["label", "labelPosition"]));
         return new FormSliderPresenter(props, sliderPresenter);
     }, [props.value]);
     const [sliderVm, setSliderVm] = useState(presenter.sliderVm);

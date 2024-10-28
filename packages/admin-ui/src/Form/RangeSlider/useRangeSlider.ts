@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import omit from "lodash/omit";
 import { autorun } from "mobx";
 import { RangeSliderProps } from "./RangeSlider";
 import { RangeSliderPresenter } from "~/RangeSlider";
@@ -6,7 +7,9 @@ import { FormRangeSliderPresenter } from "./RangeSliderPresenter";
 
 export const useRangeSlider = (props: RangeSliderProps) => {
     const presenter = useMemo(() => {
-        const rangeSliderPresenter = new RangeSliderPresenter(props);
+        const rangeSliderPresenter = new RangeSliderPresenter(
+            omit(props, ["label", "labelPosition"])
+        );
         return new FormRangeSliderPresenter(props, rangeSliderPresenter);
     }, [props.value]);
     const [sliderVm, setSliderVm] = useState(presenter.sliderVm);
