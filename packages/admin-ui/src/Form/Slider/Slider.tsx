@@ -1,15 +1,9 @@
 import * as React from "react";
-import { observer } from "mobx-react-lite";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { makeDecoratable } from "@webiny/react-composition";
 import { Label } from "~/Label";
-import {
-    ComposableSlider,
-    SliderPresenter,
-    SliderProps as BaseSliderProps,
-    SliderThumbProps
-} from "~/Slider";
-import { FormSliderPresenter } from "./SliderPresenter";
+import { ComposableSlider, SliderProps as BaseSliderProps, SliderThumbProps } from "~/Slider";
+import { useSlider } from "./useSlider";
 
 /**
  * Slider Value
@@ -30,7 +24,6 @@ const SliderValue = makeDecoratable("SliderValue", DecoratorableSliderValue);
 interface SliderProps extends BaseSliderProps {
     label: React.ReactNode;
     labelPosition?: "top" | "side";
-    valueConverter?: (value: number) => string;
 }
 
 interface DecoratorableSliderProps {
@@ -92,18 +85,15 @@ const SliderWithSideValue = makeDecoratable(
 /**
  * Slider
  */
-const DecoratableFormSlider = observer((props: SliderProps) => {
-    const { sliderVm, thumbVm, labelVm } = React.useMemo(() => {
-        const baseSliderPresenter = new SliderPresenter(props);
-        return new FormSliderPresenter(props, baseSliderPresenter);
-    }, [props]);
+const DecoratableFormSlider = ({ labelPosition, ...props }: SliderProps) => {
+    const { sliderVm, thumbVm, labelVm } = useSlider(props);
 
-    if (props.labelPosition === "side") {
+    if (labelPosition === "side") {
         return <SliderWithSideValue sliderVm={sliderVm} thumbVm={thumbVm} labelVm={labelVm} />;
     }
 
     return <SliderWithTopValue sliderVm={sliderVm} thumbVm={thumbVm} labelVm={labelVm} />;
-});
+};
 
 const Slider = makeDecoratable("Slider", DecoratableFormSlider);
 

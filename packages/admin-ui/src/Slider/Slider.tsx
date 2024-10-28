@@ -2,9 +2,8 @@ import * as React from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { makeDecoratable } from "@webiny/react-composition";
 import { cva, type VariantProps } from "class-variance-authority";
-import { observer } from "mobx-react-lite";
 import { cn } from "~/utils";
-import { SliderPresenter } from "./SliderPresenter";
+import { useSlider } from "./useSlider";
 
 /**
  * Slider Root
@@ -121,13 +120,11 @@ interface SliderProps
     value?: number;
 }
 
-const DecoratableSlider = observer((props: SliderProps) => {
-    const { sliderVm, thumbVm } = React.useMemo(() => {
-        return new SliderPresenter(props);
-    }, [props]);
+const DecoratableSlider = (props: SliderProps) => {
+    const { sliderVm, thumbVm } = useSlider(props);
 
     return <ComposableSlider sliderVm={sliderVm} thumbVm={thumbVm} />;
-});
+};
 
 const Slider = makeDecoratable("Slider", DecoratableSlider);
 

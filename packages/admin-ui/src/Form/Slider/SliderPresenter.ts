@@ -28,11 +28,10 @@ class FormSliderPresenter implements ISliderPresenter {
         return { label: this.props.label, value: this.labelValue };
     }
 
-    private onValueChange = (value: number[]) => {
-        const [newValue] = value;
+    private onValueChange = (values: number[]): void => {
+        const [newValue] = values;
         this.localValue = newValue;
-        this.props.onValueChange?.(newValue);
-        this.sliderPresenter.sliderVm.onValueChange?.(value);
+        this.sliderPresenter.sliderVm.onValueChange?.(values);
     };
 
     private get labelValue() {
