@@ -36,10 +36,11 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
     public async execute(
         params: IElasticsearchSynchronizeExecuteParams
     ): Promise<IElasticsearchSynchronizeExecuteResponse> {
-        const { items, done, index } = params;
+        const { items, done, index, skipDryRun } = params;
         if (items.length === 0) {
             return {
-                done: true
+                done: true,
+                keys: []
             };
         }
 
@@ -65,6 +66,7 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
             timer: this.timer,
             context: this.context
         });
+        const keys: string[] = [];
         /**
          * We need to find the items we have in the Elasticsearch but not in the DynamoDB-Elasticsearch table.
          */
@@ -75,17 +77,28 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
             if (exists) {
                 continue;
             }
+            keys.push(item._id);
             elasticsearchSyncBuilder.delete({
                 index,
-                id: `${item.PK}:${item.SK}`
+                id: item._id
             });
+        }
+        /**
+         * If there is dry run, just return the done flag + items which are going to get deleted.
+         */
+        if (skipDryRun === false) {
+            return {
+                done,
+                keys
+            };
         }
 
         const executeWithRetry = elasticsearchSyncBuilder.build();
         await executeWithRetry();
 
         return {
-            done
+            done,
+            keys
         };
     }
 

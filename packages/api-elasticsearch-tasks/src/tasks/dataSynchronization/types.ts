@@ -4,6 +4,8 @@ import { IIndexManager } from "~/settings/types";
 import {
     ITaskResponseAbortedResult,
     ITaskResponseContinueResult,
+    ITaskResponseDoneResult,
+    ITaskResponseDoneResultOutput,
     ITaskResponseErrorResult
 } from "@webiny/tasks";
 import { IElasticsearchSynchronize } from "~/tasks/dataSynchronization/elasticsearch/abstractions/ElasticsearchSynchronize";
@@ -21,11 +23,17 @@ export interface IDataSynchronizationInputElasticsearchToDynamoDbValue
 
 export interface IDataSynchronizationInput {
     flow: "elasticsearchToDynamoDb";
+    skipDryRun: boolean;
     elasticsearchToDynamoDb?: IDataSynchronizationInputElasticsearchToDynamoDbValue;
+}
+
+export interface IDataSynchronizationOutput extends ITaskResponseDoneResultOutput {
+    keys?: string[];
 }
 
 export type ISynchronizationRunResult =
     | ITaskResponseContinueResult<IDataSynchronizationInput>
+    | ITaskResponseDoneResult<IDataSynchronizationOutput>
     | ITaskResponseErrorResult
     | ITaskResponseAbortedResult;
 
@@ -51,4 +59,7 @@ export interface IFactories {
     elasticsearchToDynamoDb: IElasticsearchSyncFactory;
 }
 
-export type IDataSynchronizationManager = IManager<IDataSynchronizationInput>;
+export type IDataSynchronizationManager = IManager<
+    IDataSynchronizationInput,
+    IDataSynchronizationOutput
+>;

@@ -35,6 +35,8 @@ export class ElasticsearchToDynamoDbSynchronization implements ISynchronization 
 
         let currentIndex = indexes[next];
 
+        const keys: string[] = [];
+
         while (currentIndex) {
             if (this.manager.isAborted()) {
                 return this.manager.response.aborted();
@@ -45,6 +47,14 @@ export class ElasticsearchToDynamoDbSynchronization implements ISynchronization 
              */
             //
             else if (this.manager.isCloseToTimeout(180)) {
+                /**
+                 * If run is a dru run, we will not continue, we will return keys which are going to get deleted.
+                 */
+                if (input.skipDryRun === false) {
+                    return this.manager.response.done("Dry run.", {
+                        keys
+                    });
+                }
                 return this.manager.response.continue({
                     ...input,
                     elasticsearchToDynamoDb: {
@@ -61,13 +71,15 @@ export class ElasticsearchToDynamoDbSynchronization implements ISynchronization 
                 limit: 100
             });
 
-            const { done } = await this.synchronize.execute({
+            const syncResult = await this.synchronize.execute({
                 done: result.done,
                 index: currentIndex,
-                items: result.items
+                items: result.items,
+                skipDryRun: input.skipDryRun
             });
+            keys.push(...syncResult.keys);
 
-            if (!done && result.cursor) {
+            if (!syncResult.done && result.cursor) {
                 cursor = result.cursor;
                 continue;
             }
@@ -75,6 +87,14 @@ export class ElasticsearchToDynamoDbSynchronization implements ISynchronization 
 
             const next = indexes.findIndex(index => index === currentIndex) + 1;
             currentIndex = indexes[next];
+        }
+        /**
+         * If run is a dru run, we will not continue, we will return keys which are going to get deleted.
+         */
+        if (input.skipDryRun === false) {
+            return this.manager.response.done("Dry run.", {
+                keys
+            });
         }
 
         return this.manager.response.continue({

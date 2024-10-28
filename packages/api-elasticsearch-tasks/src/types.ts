@@ -1,6 +1,10 @@
 import { ElasticsearchContext } from "@webiny/api-elasticsearch/types";
 import { Entity } from "@webiny/db-dynamodb/toolbox";
-import { Context as TasksContext, IIsCloseToTimeoutCallable } from "@webiny/tasks/types";
+import {
+    Context as TasksContext,
+    IIsCloseToTimeoutCallable,
+    ITaskResponseDoneResultOutput
+} from "@webiny/tasks/types";
 import { DynamoDBDocument } from "@webiny/aws-sdk/client-dynamodb";
 import { Client } from "@webiny/api-elasticsearch";
 import { createTable } from "~/definitions";
@@ -52,14 +56,17 @@ export interface IDynamoDbElasticsearchRecord {
     modified: string;
 }
 
-export interface IManager<T> {
+export interface IManager<
+    T,
+    O extends ITaskResponseDoneResultOutput = ITaskResponseDoneResultOutput
+> {
     readonly documentClient: DynamoDBDocument;
     readonly elasticsearch: Client;
     readonly context: Context;
     readonly table: ReturnType<typeof createTable>;
     readonly isCloseToTimeout: IIsCloseToTimeoutCallable;
     readonly isAborted: () => boolean;
-    readonly response: ITaskResponse<T>;
+    readonly response: ITaskResponse<T, O>;
     readonly store: ITaskManagerStore<T>;
     readonly timer: ITimer;
 

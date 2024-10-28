@@ -30,7 +30,8 @@ describe("ElasticsearchToDynamoDbSynchronization", () => {
 
         try {
             const result = await sync.run({
-                flow: "elasticsearchToDynamoDb"
+                flow: "elasticsearchToDynamoDb",
+                skipDryRun: true
             });
             expect(result).toEqual("Should not reach this point.");
         } catch (ex) {
@@ -116,7 +117,8 @@ describe("ElasticsearchToDynamoDbSynchronization", () => {
         });
 
         const result = await sync.run({
-            flow: "elasticsearchToDynamoDb"
+            flow: "elasticsearchToDynamoDb",
+            skipDryRun: true
         });
         expect(result).toEqual({
             delay: -1,
@@ -124,7 +126,8 @@ describe("ElasticsearchToDynamoDbSynchronization", () => {
                 elasticsearchToDynamoDb: {
                     finished: true
                 },
-                flow: "elasticsearchToDynamoDb"
+                flow: "elasticsearchToDynamoDb",
+                skipDryRun: true
             },
             locale: "en-US",
             message: undefined,

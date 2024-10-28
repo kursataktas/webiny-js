@@ -2,13 +2,14 @@ import { createTaskDefinition } from "@webiny/tasks";
 import { Context, IElasticsearchTaskConfig } from "~/types";
 import {
     IDataSynchronizationInput,
-    IDataSynchronizationManager
+    IDataSynchronizationManager,
+    IDataSynchronizationOutput
 } from "~/tasks/dataSynchronization/types";
 
 export const DATA_SYNCHRONIZATION_TASK = "dataSynchronization";
 
 export const createDataSynchronization = (params?: IElasticsearchTaskConfig) => {
-    return createTaskDefinition<Context, IDataSynchronizationInput>({
+    return createTaskDefinition<Context, IDataSynchronizationInput, IDataSynchronizationOutput>({
         id: DATA_SYNCHRONIZATION_TASK,
         isPrivate: false,
         title: "Data Synchronization",
@@ -52,7 +53,10 @@ export const createDataSynchronization = (params?: IElasticsearchTaskConfig) => 
                     indexManager,
                     factories: createFactories()
                 });
-                return await dataSynchronization.run(input);
+                return await dataSynchronization.run({
+                    ...input,
+                    skipDryRun: !!input.skipDryRun
+                });
             } catch (ex) {
                 return response.error(ex);
             }
