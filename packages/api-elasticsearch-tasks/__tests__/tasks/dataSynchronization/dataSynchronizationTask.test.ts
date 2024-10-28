@@ -40,7 +40,8 @@ describe("data synchronization - elasticsearch", () => {
                 maxIterations: 100,
                 disableDatabaseLogs: true,
                 fields: [],
-                run: expect.any(Function)
+                run: expect.any(Function),
+                createInputValidation: expect.any(Function)
             }
         });
     });
@@ -50,46 +51,33 @@ describe("data synchronization - elasticsearch", () => {
 
         const context = await handler.rawHandle();
 
-        const task = await context.tasks.createTask<IDataSynchronizationInput>({
-            definitionId: DATA_SYNCHRONIZATION_TASK,
-            input: {
-                // @ts-expect-error
-                flow: "unknownFlow",
-                skipDryRun: true
-            },
-            name: "Data Sync Mock Task"
-        });
-
-        const runner = createRunner({
-            context,
-            task: createDataSynchronization(),
-            onContinue: async () => {
-                return;
-            }
-        });
-
-        const result = await runner({
-            webinyTaskId: task.id
-        });
-
-        expect(result).toEqual({
-            status: TaskResponseStatus.ERROR,
-            webinyTaskId: task.id,
-            webinyTaskDefinitionId: DATA_SYNCHRONIZATION_TASK,
-            tenant: "root",
-            locale: "en-US",
-            error: {
-                message: `Invalid flow "unknownFlow". Allowed flows: elasticsearchToDynamoDb.`,
-                data: {
-                    input: {
-                        flow: "unknownFlow",
-                        skipDryRun: true
+        try {
+            const task = await context.tasks.createTask<IDataSynchronizationInput>({
+                definitionId: DATA_SYNCHRONIZATION_TASK,
+                input: {
+                    // @ts-expect-error
+                    flow: "unknownFlow",
+                    skipDryRun: true
+                },
+                name: "Data Sync Mock Task"
+            });
+            expect(task).toEqual("Should not reach this point.");
+        } catch (ex) {
+            expect(ex.message).toEqual("Validation failed.");
+            expect(ex.data).toEqual({
+                invalidFields: {
+                    flow: {
+                        code: "invalid_enum_value",
+                        data: {
+                            fatal: undefined,
+                            path: ["flow"]
+                        },
+                        message:
+                            "Invalid enum value. Expected 'elasticsearchToDynamoDb', received 'unknownFlow'"
                     }
                 }
-            }
-        });
-        const taskCheck = await context.tasks.getTask(task.id);
-        expect(taskCheck?.iterations).toEqual(1);
+            });
+        }
     });
 
     it("should run a task and end with done", async () => {

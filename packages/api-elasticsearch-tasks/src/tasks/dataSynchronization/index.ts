@@ -65,11 +65,16 @@ export const createDataSynchronization = (params?: IElasticsearchTaskConfig) => 
             return {
                 flow: validator.enum(["elasticsearchToDynamoDb"]),
                 skipDryRun: validator.boolean().optional().default(false),
-                elasticsearchToDynamoDb: validator.object({
-                    finished: validator.boolean().optional().default(false),
-                    index: validator.string().optional(),
-                    cursor: validator.array(validator.string()).optional()
-                })
+                elasticsearchToDynamoDb: validator
+                    .object({
+                        finished: validator.boolean().optional().default(false),
+                        index: validator.string().optional(),
+                        cursor: validator.array(validator.string()).optional()
+                    })
+                    .optional()
+                    .default({
+                        finished: false
+                    })
             };
         }
     });
