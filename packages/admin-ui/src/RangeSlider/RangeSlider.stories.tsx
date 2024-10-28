@@ -1,7 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { RangeSlider } from "./RangeSlider";
-import { TooltipProvider } from "~/Tooltip";
 
 const meta: Meta<typeof RangeSlider> = {
     title: "Components/RangeSlider",
@@ -16,11 +15,9 @@ const meta: Meta<typeof RangeSlider> = {
     },
     decorators: [
         Story => (
-            <TooltipProvider>
-                <div className="w-[60%] h-32 mx-auto flex justify-center items-center">
-                    <Story />
-                </div>
-            </TooltipProvider>
+            <div className="w-[60%] h-32 mx-auto flex justify-center items-center">
+                <Story />
+            </div>
         )
     ]
 };
@@ -30,28 +27,29 @@ type Story = StoryObj<typeof RangeSlider>;
 
 export const Default: Story = {};
 
-export const WithMinAndMaxValues = {
+export const WithDefaultValues: Story = {
+    args: {
+        defaultValue: [25, 75]
+    }
+};
+
+export const WithMinAndMaxValues: Story = {
     args: {
         min: 25,
         max: 75
     }
 };
 
-export const WithDefaultValues = {
-    args: {
-        defaultValue: [25, 75]
-    }
-};
-
-export const WithSteps = {
+export const WithSteps: Story = {
     args: {
         step: 10
     }
 };
 
-export const Disabled = {
+export const Disabled: Story = {
     args: {
-        disabled: true
+        disabled: true,
+        defaultValue: [25, 75]
     }
 };
 

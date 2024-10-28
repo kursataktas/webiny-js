@@ -7,7 +7,7 @@ import { SliderThumbProps } from "~/Slider";
 interface IRangeSliderPresenter {
     get sliderVm(): BaseSliderProps;
     get thumbsVm(): Omit<SliderThumbProps, "value"> & {
-        values: string[] | undefined;
+        values: string[];
     };
 }
 
@@ -51,7 +51,7 @@ class RangeSliderPresenter implements IRangeSliderPresenter {
         this.props.onValueCommit?.(values);
     };
 
-    private get thumbValues(): string[] | undefined {
+    private get thumbValues(): string[] {
         return this.localValues.map(value =>
             this.props.transformValues ? this.props.transformValues(value) : String(value)
         );

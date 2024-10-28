@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Slider } from "./Slider";
-import { TooltipProvider } from "~/Tooltip";
 
 const meta: Meta<typeof Slider> = {
     title: "Components/Form/Slider",
@@ -16,11 +15,9 @@ const meta: Meta<typeof Slider> = {
     },
     decorators: [
         Story => (
-            <TooltipProvider>
-                <div className="w-[60%] h-32 mx-auto flex justify-center items-center">
-                    <Story />
-                </div>
-            </TooltipProvider>
+            <div className="w-[60%] h-32 mx-auto flex justify-center items-center">
+                <Story />
+            </div>
         )
     ]
 };

@@ -27,6 +27,12 @@ type Story = StoryObj<typeof Slider>;
 
 export const Default: Story = {};
 
+export const WithDefaultValue: Story = {
+    args: {
+        defaultValue: 50
+    }
+};
+
 export const WithMinAndMaxValues: Story = {
     args: {
         min: 10,
@@ -42,12 +48,6 @@ export const WithNegativeMinValue: Story = {
     }
 };
 
-export const WithDefaultValue: Story = {
-    args: {
-        defaultValue: 50
-    }
-};
-
 export const WithSteps: Story = {
     args: {
         step: 10
@@ -57,7 +57,7 @@ export const WithSteps: Story = {
 export const Disabled: Story = {
     args: {
         disabled: true,
-        value: 50
+        defaultValue: 50
     }
 };
 

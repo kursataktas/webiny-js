@@ -1,10 +1,7 @@
 import * as React from "react";
 import { makeDecoratable } from "@webiny/react-composition";
 import { Label } from "~/Label";
-import {
-    RangeSlider as BaseRangeSlider,
-    RangeSliderProps as BaseRangeSliderProps
-} from "~/RangeSlider";
+import { ComposableRangeSlider, RangeSliderProps as BaseRangeSliderProps } from "~/RangeSlider";
 import { useRangeSlider } from "~/Form/RangeSlider/useRangeSlider";
 
 /**
@@ -25,8 +22,8 @@ interface RangeSliderProps extends BaseRangeSliderProps {
     valueConverter?: (value: number) => string;
 }
 
-const FormRangeSlider = (props: RangeSliderProps) => {
-    const { values, labelValues, onValuesChange } = useRangeSlider(props);
+const DecoratableFormRangeSlider = (props: RangeSliderProps) => {
+    const { sliderVm, thumbsVm, labelsVm } = useRangeSlider(props);
 
     return (
         <div className={"w-full"}>
@@ -35,19 +32,19 @@ const FormRangeSlider = (props: RangeSliderProps) => {
             </div>
             <div className={"flex flex-row items-center justify-between"}>
                 <div className={"basis-1/12 pr-2"}>
-                    <RangeSliderValue value={labelValues[0]} />
+                    <RangeSliderValue value={labelsVm.values[0]} />
                 </div>
                 <div className={"basis-10/12"}>
-                    <BaseRangeSlider {...props} value={values} onValueChange={onValuesChange} />
+                    <ComposableRangeSlider sliderVm={sliderVm} thumbsVm={thumbsVm} />
                 </div>
                 <div className={"basis-1/12 pl-2 text-right"}>
-                    <RangeSliderValue value={labelValues[1]} />
+                    <RangeSliderValue value={labelsVm.values[1]} />
                 </div>
             </div>
         </div>
     );
 };
 
-const RangeSlider = makeDecoratable("RangeSlider", FormRangeSlider);
+const RangeSlider = makeDecoratable("RangeSlider", DecoratableFormRangeSlider);
 
 export { RangeSlider, type RangeSliderProps };
