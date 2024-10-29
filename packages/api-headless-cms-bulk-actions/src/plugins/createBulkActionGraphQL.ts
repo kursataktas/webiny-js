@@ -13,7 +13,7 @@ export const createBulkActionGraphQL = (config: CreateBulkActionGraphQL) => {
         const tenant = context.tenancy.getCurrentTenant();
         const locale = context.i18n.getContentLocale();
 
-        if (!tenant || !locale || !(await isHeadlessCmsReady(context))) {
+        if (!locale || !(await isHeadlessCmsReady(context))) {
             return;
         }
 

@@ -11,7 +11,7 @@ export const attachHeadlessCmsImportExportGraphQL = async (context: Context): Pr
     const locale = context.i18n.getContentLocale();
     const models = await listModels(context);
 
-    if (!tenant || !locale || models.length === 0) {
+    if (!locale || models.length === 0) {
         return;
     }
 
