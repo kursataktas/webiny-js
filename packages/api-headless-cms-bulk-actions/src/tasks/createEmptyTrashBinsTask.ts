@@ -34,7 +34,7 @@ export const createEmptyTrashBinsTask = () => {
         id: "hcmsEntriesEmptyTrashBins",
         title: "Headless CMS - Empty all trash bins",
         description: "Delete all entries in the trash bin for each model in the system.",
-        maxIterations: 500,
+        maxIterations: 120,
         disableDatabaseLogs: true,
         run: async (params: IEmptyTrashBinsTaskParams) => {
             const { response, isAborted, context, input, isCloseToTimeout } = params;
