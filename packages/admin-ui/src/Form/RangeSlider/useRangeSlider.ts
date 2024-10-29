@@ -11,7 +11,7 @@ export const useRangeSlider = (props: RangeSliderProps) => {
             omit(props, ["label", "labelPosition"])
         );
         return new FormRangeSliderPresenter(props, rangeSliderPresenter);
-    }, [props.value]);
+    }, [JSON.stringify(props)]);
     const [sliderVm, setSliderVm] = useState(presenter.sliderVm);
     const [thumbsVm, setThumbsVm] = useState(presenter.thumbsVm);
     const [labelsVm, setLabelsVm] = useState(presenter.labelsVm);

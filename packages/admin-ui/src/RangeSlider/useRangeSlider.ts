@@ -4,7 +4,7 @@ import { RangeSliderProps } from "./RangeSlider";
 import { RangeSliderPresenter } from "./RangeSliderPresenter";
 
 export const useRangeSlider = (props: RangeSliderProps) => {
-    const presenter = useMemo(() => new RangeSliderPresenter(props), [props]);
+    const presenter = useMemo(() => new RangeSliderPresenter(props), [JSON.stringify(props)]);
     const [sliderVm, setSliderVm] = useState(presenter.sliderVm);
     const [thumbsVm, setThumbsVm] = useState(presenter.thumbsVm);
 

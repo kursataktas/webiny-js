@@ -4,7 +4,7 @@ import { SliderProps } from "./Slider";
 import { SliderPresenter } from "./SliderPresenter";
 
 export const useSlider = (props: SliderProps) => {
-    const presenter = useMemo(() => new SliderPresenter(props), [props]);
+    const presenter = useMemo(() => new SliderPresenter(props), [JSON.stringify(props)]);
     const [sliderVm, setSliderVm] = useState(presenter.sliderVm);
     const [thumbVm, setThumbVm] = useState(presenter.thumbVm);
 

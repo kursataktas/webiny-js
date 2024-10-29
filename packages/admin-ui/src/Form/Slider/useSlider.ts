@@ -9,7 +9,7 @@ export const useSlider = (props: SliderProps) => {
     const presenter = useMemo(() => {
         const sliderPresenter = new SliderPresenter(omit(props, ["label", "labelPosition"]));
         return new FormSliderPresenter(props, sliderPresenter);
-    }, [props.value]);
+    }, [JSON.stringify(props)]);
     const [sliderVm, setSliderVm] = useState(presenter.sliderVm);
     const [thumbVm, setThumbVm] = useState(presenter.thumbVm);
     const [labelVm, setLabelVm] = useState(presenter.labelVm);
