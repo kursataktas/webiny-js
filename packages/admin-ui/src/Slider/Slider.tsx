@@ -85,23 +85,30 @@ const DecoratableSliderThumb = ({ value, showTooltip, tooltipSide }: SliderThumb
 const SliderThumb = makeDecoratable("SliderThumb", DecoratableSliderThumb);
 
 /**
- * ComposableSlider
+ * SliderRenderer
  */
-interface ComposableSliderProps {
+interface SliderRendererProps {
     sliderVm: SliderPrimitive.SliderProps;
     thumbVm: SliderThumbProps;
+    onValueChange: (values: number[]) => void;
+    onValueCommit: (values: number[]) => void;
 }
 
-const DecoratorableComposableSlider = ({ sliderVm, thumbVm }: ComposableSliderProps) => {
+const DecoratorableSliderRenderer = ({
+    sliderVm,
+    thumbVm,
+    onValueChange,
+    onValueCommit
+}: SliderRendererProps) => {
     return (
-        <SliderRoot {...sliderVm}>
+        <SliderRoot {...sliderVm} onValueChange={onValueChange} onValueCommit={onValueCommit}>
             <SliderTrack />
             <SliderThumb {...thumbVm} />
         </SliderRoot>
     );
 };
 
-const ComposableSlider = makeDecoratable("ComposableSlider", DecoratorableComposableSlider);
+const SliderRenderer = makeDecoratable("SliderRenderer", DecoratorableSliderRenderer);
 
 /**
  * Slider
@@ -121,16 +128,22 @@ interface SliderProps
 }
 
 const DecoratableSlider = (props: SliderProps) => {
-    const { sliderVm, thumbVm } = useSlider(props);
-
-    return <ComposableSlider sliderVm={sliderVm} thumbVm={thumbVm} />;
+    const { vm, changeValue, commitValue } = useSlider(props);
+    return (
+        <SliderRenderer
+            sliderVm={vm.sliderVm}
+            thumbVm={vm.thumbVm}
+            onValueChange={changeValue}
+            onValueCommit={commitValue}
+        />
+    );
 };
 
 const Slider = makeDecoratable("Slider", DecoratableSlider);
 
 export {
     Slider,
-    ComposableSlider,
+    SliderRenderer,
     SliderRoot,
     SliderTrack,
     SliderThumb,

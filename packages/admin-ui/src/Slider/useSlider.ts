@@ -4,17 +4,19 @@ import { SliderProps } from "./Slider";
 import { SliderPresenter } from "./SliderPresenter";
 
 export const useSlider = (props: SliderProps) => {
-    const presenter = useMemo(() => new SliderPresenter(props), [JSON.stringify(props)]);
-    const [sliderVm, setSliderVm] = useState(presenter.sliderVm);
-    const [thumbVm, setThumbVm] = useState(presenter.thumbVm);
+    const presenter = useMemo(() => {
+        const presenter = new SliderPresenter();
+        presenter.init(props);
+        return presenter;
+    }, [props]);
+
+    const [vm, setVm] = useState(presenter.vm);
 
     useEffect(() => {
-        const dispose = autorun(() => {
-            setSliderVm(presenter.sliderVm);
-            setThumbVm(presenter.thumbVm);
+        return autorun(() => {
+            setVm(presenter.vm);
         });
-        return () => dispose(); // Cleanup on unmount
     }, [presenter]);
 
-    return { sliderVm, thumbVm };
+    return { vm, changeValue: presenter.changeValue, commitValue: presenter.commitValue };
 };
