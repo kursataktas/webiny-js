@@ -4,6 +4,7 @@ import { ReactComponent as ChevronDown } from "@material-design-icons/svg/outlin
 import { ReactComponent as Check } from "@material-design-icons/svg/outlined/check.svg";
 import { makeDecoratable } from "@webiny/react-composition";
 import * as SelectPrimitive from "@radix-ui/react-select";
+import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "~/utils";
 import { useSelect } from "./useSelect";
 
@@ -14,11 +15,40 @@ const SelectGroup = SelectPrimitive.Group;
 const SelectValue = SelectPrimitive.Value;
 
 /**
- * SelectTrigger
+ * Trigger
  */
-const DecoratableSelectTrigger = React.forwardRef<
+
+const triggerVariants = cva(
+    "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+    {
+        variants: {
+            variant: {
+                primary:
+                    "bg-primary text-primary-foreground hover:bg-primary/90 [&>svg]:fill-white",
+                secondary:
+                    "bg-gray-200 text-gray-900 fill-gray-900 border border-gray-200 hover:bg-gray-300 hover:border-gray-300 hover:text-gray-800",
+                quiet: "bg-white text-gray-900 fill-gray-900 border border-gray-400 hover:bg-gray-100 hover:text-gray-900"
+            },
+            size: {
+                md: "py-1.5 px-2 rounded text-md font-normal",
+                lg: "py-2.5 px-3 rounded-lg text-base font-medium",
+                xl: "py-3.5 px-4 rounded-lg text-lg font-medium"
+            }
+        },
+        defaultVariants: {
+            variant: "primary",
+            size: "md"
+        }
+    }
+);
+
+interface TriggerProps
+    extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>,
+        VariantProps<typeof triggerVariants> {}
+
+const DecoratableTrigger = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.Trigger>,
-    React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>
+    TriggerProps
 >(({ className, children, ...props }, ref) => (
     <SelectPrimitive.Trigger
         ref={ref}
@@ -34,9 +64,9 @@ const DecoratableSelectTrigger = React.forwardRef<
         </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
 ));
-DecoratableSelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
+DecoratableTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
-const SelectTrigger = makeDecoratable("SelectTrigger", DecoratableSelectTrigger);
+const Trigger = makeDecoratable("Trigger", DecoratableTrigger);
 
 /**
  * SelectScrollUpButton
@@ -184,17 +214,17 @@ const SelectSeparator = makeDecoratable("SelectSeparator", DecoratableSelectSepa
 /**
  * Trigger
  */
-type TriggerProps = SelectPrimitive.SelectValueProps;
+type SelectTriggerProps = SelectPrimitive.SelectValueProps;
 
-const DecoratableTrigger = (props: TriggerProps) => {
+const DecoratableSelectTrigger = (props: SelectTriggerProps) => {
     return (
-        <SelectTrigger>
+        <Trigger>
             <SelectValue {...props} />
-        </SelectTrigger>
+        </Trigger>
     );
 };
 
-const Trigger = makeDecoratable("Trigger", DecoratableTrigger);
+const SelectTrigger = makeDecoratable("SelectTrigger", DecoratableSelectTrigger);
 
 /**
  * SelectOptions
@@ -261,7 +291,7 @@ const DecoratableComposableSelect = ({
 }: ComposableSelectProps) => {
     return (
         <SelectRoot {...selectVm}>
-            <Trigger {...selectTriggerVm} />
+            <SelectTrigger {...selectTriggerVm} />
             <SelectOptions {...selectOptionsVm} />
         </SelectRoot>
     );
