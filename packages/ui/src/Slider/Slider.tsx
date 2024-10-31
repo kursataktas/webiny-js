@@ -80,6 +80,7 @@ class Slider extends React.Component<Props> {
                     value={sliderValue}
                     onValueCommit={this.onValueCommit}
                     onValueChange={this.onValueChange}
+                    showTooltip={this.props.discrete}
                 />
 
                 {validationIsValid === false && (
