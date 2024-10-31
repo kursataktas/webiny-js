@@ -56,14 +56,14 @@ describe("FormSliderPresenter", () => {
     });
 
     it("should apply the `transformValue` function if provided", () => {
-        const transformValue = (value: number) => `${value}%`;
+        const transformValue = (value: number) => `${value} units`;
         const presenter = new SliderPresenter();
         const formSliderPresenter = new FormSliderPresenter(presenter);
         formSliderPresenter.init({ label: "Label", value: 30, onValueChange, transformValue });
-        expect(formSliderPresenter.vm.labelVm.value).toEqual("30%");
+        expect(formSliderPresenter.vm.labelVm.value).toEqual("30 units");
     });
 
-    it("should fall back to `localValue` as a string if `transformValue` is undefined", () => {
+    it("should fall back to `value` as a string if `transformValue` is undefined", () => {
         const presenter = new SliderPresenter();
         const formSliderPresenter = new FormSliderPresenter(presenter);
         formSliderPresenter.init({ label: "Label", value: 45, onValueChange });

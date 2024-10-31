@@ -32,10 +32,10 @@ class RangeSliderPresenter implements IRangeSliderPresenter<RangeSliderProps> {
                 ...omit(this.props, [
                     "showTooltip",
                     "tooltipSide",
-                    "transformValue",
-                    "onValueChange",
-                    "onValueCommit",
-                    "value"
+                    "transformValues",
+                    "onValuesChange",
+                    "onValuesCommit",
+                    "values"
                 ]),
                 min: this.min,
                 max: this.max,

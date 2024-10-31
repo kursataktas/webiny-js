@@ -1,45 +1,63 @@
 import { makeAutoObservable } from "mobx";
-import { IRangeSliderPresenter } from "~/RangeSlider";
-import { RangeSliderProps } from "~/Form";
+import {
+    IRangeSliderPresenter,
+    RangeSliderThumbsVm,
+    RangeSliderVm,
+    RangeSliderProps as BaseRangeSliderProps
+} from "~/RangeSlider";
+import { RangeSliderLabelVm, RangeSliderProps } from "./RangeSlider";
 
-class FormRangeSliderPresenter implements IRangeSliderPresenter {
-    private rangeSliderPresenter: IRangeSliderPresenter;
-    private localValues: number[];
+interface IFormRangeSliderPresenter<TProps> {
+    get vm(): {
+        sliderVm: RangeSliderVm;
+        thumbsVm: RangeSliderThumbsVm;
+        labelVm: RangeSliderLabelVm;
+    };
+    init: (props: TProps) => void;
+    changeValues: (values: number[]) => void;
+    commitValues: (values: number[]) => void;
+}
 
-    constructor(private props: RangeSliderProps, rangeSliderPresenter: IRangeSliderPresenter) {
-        const { defaultValue, value, min = 0, max = 100 } = props;
+class FormRangeSliderPresenter implements IFormRangeSliderPresenter<RangeSliderProps> {
+    private rangeSliderPresenter: IRangeSliderPresenter<BaseRangeSliderProps>;
+    private props: RangeSliderProps | undefined;
+
+    constructor(rangeSliderPresenter: IRangeSliderPresenter<BaseRangeSliderProps>) {
         this.rangeSliderPresenter = rangeSliderPresenter;
-        this.localValues = defaultValue ?? value ?? [min, max];
         makeAutoObservable(this);
     }
 
-    get sliderVm() {
+    init(props: RangeSliderProps) {
+        this.props = props;
+        this.rangeSliderPresenter.init(props);
+    }
+
+    get vm() {
         return {
-            ...this.rangeSliderPresenter.sliderVm,
-            onValueChange: this.onValueChange
+            sliderVm: {
+                ...this.rangeSliderPresenter.vm.sliderVm
+            },
+            thumbsVm: {
+                ...this.rangeSliderPresenter.vm.thumbsVm
+            },
+            labelVm: {
+                label: this.props?.label ?? "",
+                values: this.transformToLabelValues(this.rangeSliderPresenter.vm.sliderVm.values)
+            }
         };
     }
 
-    get thumbsVm() {
-        return {
-            ...this.rangeSliderPresenter.thumbsVm
-        };
-    }
-
-    get labelsVm() {
-        return {
-            values: this.labelValues
-        };
-    }
-
-    private onValueChange = (values: number[]): void => {
-        this.localValues = values;
-        this.rangeSliderPresenter.sliderVm.onValueChange?.(values);
+    public changeValues = (values: number[]): void => {
+        this.rangeSliderPresenter.changeValues(values);
     };
 
-    private get labelValues() {
-        return this.localValues.map(value =>
-            this.props.transformValues ? this.props.transformValues(value) : String(value)
+    public commitValues = (values: number[]): void => {
+        this.rangeSliderPresenter.commitValues(values);
+    };
+
+    private transformToLabelValues(values: number[]) {
+        return values.map(value =>
+            this.props?.transformValues ? this.props.transformValues(value) : String(value)
         );
     }
 }

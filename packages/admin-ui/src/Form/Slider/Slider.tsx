@@ -1,15 +1,22 @@
 import * as React from "react";
-import * as SliderPrimitive from "@radix-ui/react-slider";
 import { makeDecoratable } from "@webiny/react-composition";
 import { Label } from "~/Label";
-import { SliderRenderer, SliderProps as BaseSliderProps, SliderThumbProps } from "~/Slider";
+import { SliderRenderer, SliderProps as BaseSliderProps, SliderVm, SliderThumbVm } from "~/Slider";
 import { useSlider } from "./useSlider";
+
+type LabelPosition = "top" | "side";
+
+type LabelVm = {
+    label: React.ReactNode;
+    position: LabelPosition;
+    value: string;
+};
 
 /**
  * Slider Value
  */
 interface SliderValueProps extends React.HTMLAttributes<HTMLSpanElement> {
-    value?: string;
+    value?: LabelVm["value"];
 }
 
 const DecoratorableSliderValue = (props: SliderValueProps) => {
@@ -22,14 +29,14 @@ const DecoratorableSliderValue = (props: SliderValueProps) => {
 const SliderValue = makeDecoratable("SliderValue", DecoratorableSliderValue);
 
 interface SliderProps extends BaseSliderProps {
-    label: React.ReactNode;
-    labelPosition?: "top" | "side";
+    label: LabelVm["label"];
+    labelPosition?: LabelPosition;
 }
 
 interface DecoratorableSliderProps {
-    sliderVm: SliderPrimitive.SliderProps;
-    thumbVm: SliderThumbProps;
-    labelVm: SliderValueProps & { label: React.ReactNode };
+    sliderVm: SliderVm;
+    thumbVm: SliderThumbVm;
+    labelVm: LabelVm;
     onValueChange: (values: number[]) => void;
     onValueCommit: (values: number[]) => void;
 }
@@ -129,4 +136,4 @@ const DecoratableFormSlider = (props: SliderProps) => {
 
 const Slider = makeDecoratable("Slider", DecoratableFormSlider);
 
-export { Slider, type SliderProps };
+export { Slider, type SliderProps, type LabelVm };

@@ -7,8 +7,8 @@ const meta: Meta<typeof RangeSlider> = {
     component: RangeSlider,
     tags: ["autodocs"],
     argTypes: {
-        onValueChange: { action: "onValueChange" },
-        onValueCommit: { action: "onValueCommit" }
+        onValuesChange: { action: "onValuesChange" },
+        onValuesCommit: { action: "onValuesCommit" }
     },
     parameters: {
         layout: "fullscreen"
@@ -19,7 +19,13 @@ const meta: Meta<typeof RangeSlider> = {
                 <Story />
             </div>
         )
-    ]
+    ],
+    render: args => {
+        const [values, setValues] = useState(args.values);
+        return (
+            <RangeSlider {...args} values={values} onValuesChange={values => setValues(values)} />
+        );
+    }
 };
 
 export default meta;
@@ -34,7 +40,7 @@ export const Default: Story = {
 export const WithDefaultValues: Story = {
     args: {
         label: "Label",
-        defaultValue: [25, 75]
+        values: [25, 75]
     }
 };
 
@@ -57,7 +63,7 @@ export const Disabled: Story = {
     args: {
         label: "Label",
         disabled: true,
-        defaultValue: [25, 75]
+        values: [25, 75]
     }
 };
 
@@ -100,14 +106,22 @@ export const WithExternalValueControl: Story = {
         label: "Label"
     },
     render: args => {
-        const [value, setValue] = useState([0, 100]);
+        const defaultValues = args.values ?? [25, 75];
+        const [values, setValues] = useState(defaultValues);
         return (
             <div className={"w-full"}>
                 <div>
-                    <RangeSlider {...args} value={value} onValueChange={value => setValue(value)} />
+                    <RangeSlider
+                        {...args}
+                        values={values}
+                        onValuesChange={values => setValues(values)}
+                    />
                 </div>
                 <div className={"mt-4 text-center"}>
-                    <button onClick={() => setValue([0, 100])}>{"Reset"}</button>
+                    <button onClick={() => setValues(defaultValues)}>{"Reset"}</button>
+                </div>
+                <div className={"mt-4 text-center"}>
+                    Current value: <code>{values.toString()}</code>
                 </div>
             </div>
         );

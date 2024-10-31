@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { makeDecoratable } from "@webiny/react-composition";
-import { SliderRoot, SliderThumb, SliderThumbProps, SliderTrack } from "~/Slider";
+import { SliderRoot, SliderThumb, SliderThumbVm, SliderTrack } from "~/Slider";
 import { useRangeSlider } from "./useRangeSlider";
 
 type RangeSliderVm = Omit<
@@ -13,7 +13,7 @@ type RangeSliderVm = Omit<
     max: number;
 };
 
-type RangeSliderThumbsVm = Omit<SliderThumbProps, "value"> & {
+type RangeSliderThumbsVm = Omit<SliderThumbVm, "value"> & {
     values: string[];
 };
 
@@ -60,12 +60,12 @@ interface RangeSliderProps
         SliderPrimitive.SliderProps,
         "defaultValue" | "value" | "onValueChange" | "onValueCommit"
     > {
-    values?: number[] | undefined;
-    onValuesChange?: (values: number[]) => void;
+    onValuesChange: (values: number[]) => void;
     onValuesCommit?: (values: number[]) => void;
-    transformValues?: (value: number) => string;
     showTooltip?: boolean;
     tooltipSide?: "top" | "bottom";
+    transformValues?: (value: number) => string;
+    values?: number[] | undefined;
 }
 
 const DecoratableRangeSlider = (props: RangeSliderProps) => {

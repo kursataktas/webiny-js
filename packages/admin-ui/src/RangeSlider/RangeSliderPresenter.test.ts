@@ -88,7 +88,7 @@ describe("RangeSliderPresenter", () => {
             expect(presenterTop.vm.thumbsVm.tooltipSide).toEqual("top");
 
             const presenterBottom = new RangeSliderPresenter();
-            presenterBottom.init({ tooltipSide: "bottom" });
+            presenterBottom.init({ onValuesChange, tooltipSide: "bottom" });
             expect(presenterBottom.vm.thumbsVm.tooltipSide).toEqual("bottom");
         }
 

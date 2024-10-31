@@ -1,9 +1,25 @@
 import { makeAutoObservable } from "mobx";
-import { ISliderPresenter, SliderProps as BaseSliderProps } from "~/Slider";
-import { SliderProps } from "~/Form";
 import omit from "lodash/omit";
+import {
+    ISliderPresenter,
+    SliderProps as BaseSliderProps,
+    SliderThumbVm,
+    SliderVm
+} from "~/Slider";
+import { LabelVm, SliderProps } from "./Slider";
 
-class FormSliderPresenter implements ISliderPresenter<SliderProps> {
+interface IFormSliderPresenter<TProps> {
+    get vm(): {
+        sliderVm: SliderVm;
+        thumbVm: SliderThumbVm;
+        labelVm: LabelVm;
+    };
+    init: (props: TProps) => void;
+    changeValue: (values: number[]) => void;
+    commitValue: (values: number[]) => void;
+}
+
+class FormSliderPresenter implements IFormSliderPresenter<SliderProps> {
     private sliderPresenter: ISliderPresenter<BaseSliderProps>;
     private props: SliderProps | undefined;
 

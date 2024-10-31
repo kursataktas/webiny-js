@@ -1,16 +1,11 @@
 import { makeAutoObservable } from "mobx";
 import omit from "lodash/omit";
-import { SliderProps as BaseSliderProps } from "@radix-ui/react-slider";
-import { SliderProps, SliderThumbProps } from "./Slider";
-
-export interface ISliderVm extends BaseSliderProps {
-    min: number;
-}
+import { SliderProps, SliderThumbVm, SliderVm } from "./Slider";
 
 interface ISliderPresenter<TProps> {
     get vm(): {
-        sliderVm: ISliderVm;
-        thumbVm: SliderThumbProps;
+        sliderVm: SliderVm;
+        thumbVm: SliderThumbVm;
     };
     init: (props: TProps) => void;
     changeValue: (values: number[]) => void;

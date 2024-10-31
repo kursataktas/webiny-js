@@ -5,6 +5,10 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "~/utils";
 import { useSlider } from "./useSlider";
 
+type SliderVm = Omit<SliderPrimitive.SliderProps, "min"> & {
+    min: number;
+};
+
 /**
  * Slider Root
  */
@@ -74,9 +78,9 @@ const SliderTooltip = makeDecoratable("SliderTooltip", DecoratableSliderTooltip)
 /**
  * Slider Thumb
  */
-type SliderThumbProps = SliderTooltipProps;
+type SliderThumbVm = SliderTooltipProps;
 
-const DecoratableSliderThumb = ({ value, showTooltip, tooltipSide }: SliderThumbProps) => (
+const DecoratableSliderThumb = ({ value, showTooltip, tooltipSide }: SliderThumbVm) => (
     <SliderPrimitive.Thumb className="inline-block mt-1.5 h-4 w-4 rounded-full border-2 border-background bg-primary transition-colors outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
         <SliderTooltip showTooltip={showTooltip} value={value} tooltipSide={tooltipSide} />
     </SliderPrimitive.Thumb>
@@ -88,8 +92,8 @@ const SliderThumb = makeDecoratable("SliderThumb", DecoratableSliderThumb);
  * SliderRenderer
  */
 interface SliderRendererProps {
-    sliderVm: SliderPrimitive.SliderProps;
-    thumbVm: SliderThumbProps;
+    sliderVm: SliderVm;
+    thumbVm: SliderThumbVm;
     onValueChange: (values: number[]) => void;
     onValueCommit: (values: number[]) => void;
 }
@@ -146,6 +150,7 @@ export {
     SliderRoot,
     SliderTrack,
     SliderThumb,
+    type SliderVm,
     type SliderProps,
-    type SliderThumbProps
+    type SliderThumbVm
 };

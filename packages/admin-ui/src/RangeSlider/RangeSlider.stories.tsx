@@ -89,7 +89,7 @@ export const WithExternalValueControl: Story = {
         }
     },
     render: args => {
-        const defaultValues = [25, 75];
+        const defaultValues = args.values ?? [25, 75];
         const [values, setValues] = useState(defaultValues);
         return (
             <div className={"w-full"}>
