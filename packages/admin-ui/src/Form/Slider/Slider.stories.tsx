@@ -138,6 +138,9 @@ export const WithExternalValueControl: Story = {
                 <div className={"mt-4 text-center"}>
                     <button onClick={() => setValue(defaultValue)}>{"Reset"}</button>
                 </div>
+                <div className={"mt-4 text-center"}>
+                    Current value: <code>{value}</code>
+                </div>
             </div>
         );
     }

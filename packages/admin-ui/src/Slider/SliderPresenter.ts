@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 import omit from "lodash/omit";
 import { SliderProps, SliderThumbVm, SliderVm } from "./Slider";
 
-interface ISliderPresenter<TProps> {
+interface ISliderPresenter<TProps extends SliderProps = SliderProps> {
     get vm(): {
         sliderVm: SliderVm;
         thumbVm: SliderThumbVm;
@@ -12,8 +12,8 @@ interface ISliderPresenter<TProps> {
     commitValue: (values: number[]) => void;
 }
 
-class SliderPresenter implements ISliderPresenter<SliderProps> {
-    private props: SliderProps | undefined;
+class SliderPresenter implements ISliderPresenter {
+    private props?: SliderProps;
     private showTooltip: boolean;
 
     constructor() {

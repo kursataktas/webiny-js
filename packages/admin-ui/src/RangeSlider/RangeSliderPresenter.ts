@@ -2,7 +2,7 @@ import { makeAutoObservable } from "mobx";
 import omit from "lodash/omit";
 import { RangeSliderProps, RangeSliderThumbsVm, RangeSliderVm } from "./RangeSlider";
 
-interface IRangeSliderPresenter<TProps> {
+interface IRangeSliderPresenter<TProps extends RangeSliderProps = RangeSliderProps> {
     get vm(): {
         sliderVm: RangeSliderVm;
         thumbsVm: RangeSliderThumbsVm;
@@ -12,8 +12,8 @@ interface IRangeSliderPresenter<TProps> {
     commitValues: (values: number[]) => void;
 }
 
-class RangeSliderPresenter implements IRangeSliderPresenter<RangeSliderProps> {
-    private props: RangeSliderProps | undefined;
+class RangeSliderPresenter implements IRangeSliderPresenter {
+    private props?: RangeSliderProps;
     private showTooltip: boolean;
 
     constructor() {

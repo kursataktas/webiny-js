@@ -6,7 +6,7 @@ import { useSlider } from "./useSlider";
 
 type LabelPosition = "top" | "side";
 
-type LabelVm = {
+type SliderLabelVm = {
     label: React.ReactNode;
     position: LabelPosition;
     value: string;
@@ -16,7 +16,7 @@ type LabelVm = {
  * Slider Value
  */
 interface SliderValueProps extends React.HTMLAttributes<HTMLSpanElement> {
-    value?: LabelVm["value"];
+    value?: SliderLabelVm["value"];
 }
 
 const DecoratorableSliderValue = (props: SliderValueProps) => {
@@ -29,14 +29,14 @@ const DecoratorableSliderValue = (props: SliderValueProps) => {
 const SliderValue = makeDecoratable("SliderValue", DecoratorableSliderValue);
 
 interface SliderProps extends BaseSliderProps {
-    label: LabelVm["label"];
+    label: SliderLabelVm["label"];
     labelPosition?: LabelPosition;
 }
 
 interface DecoratorableSliderProps {
     sliderVm: SliderVm;
     thumbVm: SliderThumbVm;
-    labelVm: LabelVm;
+    labelVm: SliderLabelVm;
     onValueChange: (values: number[]) => void;
     onValueCommit: (values: number[]) => void;
 }
@@ -136,4 +136,4 @@ const DecoratableFormSlider = (props: SliderProps) => {
 
 const Slider = makeDecoratable("Slider", DecoratableFormSlider);
 
-export { Slider, type SliderProps, type LabelVm };
+export { Slider, type SliderProps, type SliderLabelVm };

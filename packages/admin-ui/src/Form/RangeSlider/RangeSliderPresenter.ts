@@ -1,29 +1,19 @@
 import { makeAutoObservable } from "mobx";
-import {
-    IRangeSliderPresenter,
-    RangeSliderThumbsVm,
-    RangeSliderVm,
-    RangeSliderProps as BaseRangeSliderProps
-} from "~/RangeSlider";
+import { IRangeSliderPresenter } from "~/RangeSlider";
 import { RangeSliderLabelVm, RangeSliderProps } from "./RangeSlider";
 
-interface IFormRangeSliderPresenter<TProps> {
-    get vm(): {
-        sliderVm: RangeSliderVm;
-        thumbsVm: RangeSliderThumbsVm;
-        labelVm: RangeSliderLabelVm;
-    };
-    init: (props: TProps) => void;
-    changeValues: (values: number[]) => void;
-    commitValues: (values: number[]) => void;
+interface IFormRangeSliderPresenter<TProps extends RangeSliderProps = RangeSliderProps>
+    extends IRangeSliderPresenter<TProps> {
+    get vm(): IRangeSliderPresenter<TProps>["vm"] & { labelVm: RangeSliderLabelVm };
 }
 
-class FormRangeSliderPresenter implements IFormRangeSliderPresenter<RangeSliderProps> {
-    private rangeSliderPresenter: IRangeSliderPresenter<BaseRangeSliderProps>;
-    private props: RangeSliderProps | undefined;
+class FormRangeSliderPresenter implements IFormRangeSliderPresenter {
+    private rangeSliderPresenter: IRangeSliderPresenter;
+    private props?: RangeSliderProps;
 
-    constructor(rangeSliderPresenter: IRangeSliderPresenter<BaseRangeSliderProps>) {
+    constructor(rangeSliderPresenter: IRangeSliderPresenter) {
         this.rangeSliderPresenter = rangeSliderPresenter;
+        this.props = undefined;
         makeAutoObservable(this);
     }
 
