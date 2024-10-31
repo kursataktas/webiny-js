@@ -2337,7 +2337,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/cli@npm:^7.25.7":
+"@babel/cli@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/cli@npm:7.25.9"
   dependencies:
@@ -2392,7 +2392,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/code-frame@npm:^7.25.7, @babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.26.0":
+"@babel/code-frame@npm:^7.25.9, @babel/code-frame@npm:^7.26.0":
   version: 7.26.0
   resolution: "@babel/code-frame@npm:7.26.0"
   dependencies:
@@ -2400,6 +2400,17 @@ __metadata:
     js-tokens: ^4.0.0
     picocolors: ^1.0.0
   checksum: 2a677369e9b80b956401809485e8c2ae24df5e6076f669cf26a2809fcb88f91c2f6bb1bf3fb799dfe8487b2b7a276b62d14ac230a79d7ac8c7b369090d0a43fc
+  languageName: node
+  linkType: hard
+
+"@babel/code-frame@npm:^7.26.2":
+  version: 7.26.2
+  resolution: "@babel/code-frame@npm:7.26.2"
+  dependencies:
+    "@babel/helper-validator-identifier": ^7.25.9
+    js-tokens: ^4.0.0
+    picocolors: ^1.0.0
+  checksum: db13f5c42d54b76c1480916485e6900748bbcb0014a8aca87f50a091f70ff4e0d0a6db63cade75eb41fcc3d2b6ba0a7f89e343def4f96f00269b41b8ab8dd7b8
   languageName: node
   linkType: hard
 
@@ -2431,10 +2442,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/compat-data@npm:^7.25.8, @babel/compat-data@npm:^7.25.9, @babel/compat-data@npm:^7.26.0":
+"@babel/compat-data@npm:^7.25.9, @babel/compat-data@npm:^7.26.0":
   version: 7.26.0
   resolution: "@babel/compat-data@npm:7.26.0"
   checksum: 83204bca7faee75fb6d38492ab0357d2fc89b311cbf4486df8cfc8f48e1ddf9e09d6c358b9687a940cec07f58779ff119fcf2ed906d7ab25e07cc1a0100a7ca2
+  languageName: node
+  linkType: hard
+
+"@babel/compat-data@npm:^7.26.2":
+  version: 7.26.2
+  resolution: "@babel/compat-data@npm:7.26.2"
+  checksum: d52fae9b0dc59b409d6005ae6b172e89329f46d68136130065ebe923a156fc633e0f1c8600b3e319b9e0f99fd948f64991a5419e2e9431d00d9d235d5f7a7618
   languageName: node
   linkType: hard
 
@@ -2507,7 +2525,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.25.8":
+"@babel/core@npm:^7.26.0":
   version: 7.26.0
   resolution: "@babel/core@npm:7.26.0"
   dependencies:
@@ -3348,7 +3366,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.25.8, @babel/parser@npm:^7.25.9, @babel/parser@npm:^7.26.0":
+"@babel/parser@npm:^7.25.9, @babel/parser@npm:^7.26.0":
   version: 7.26.1
   resolution: "@babel/parser@npm:7.26.1"
   dependencies:
@@ -3356,6 +3374,17 @@ __metadata:
   bin:
     parser: ./bin/babel-parser.js
   checksum: 354320d1a0a7102b2f25620ceea1bbc809f5225432a73e8a8874009d2f82ed29e2b035fe68fb6d18bb7eafed78df1ec0fa12e8d8226b295d7a020f9b852de653
+  languageName: node
+  linkType: hard
+
+"@babel/parser@npm:^7.26.2":
+  version: 7.26.2
+  resolution: "@babel/parser@npm:7.26.2"
+  dependencies:
+    "@babel/types": ^7.26.0
+  bin:
+    parser: ./bin/babel-parser.js
+  checksum: c88b5ea0adf357ef909cdc2c31e284a154943edc59f63f6e8a4c20bf773a1b2f3d8c2205e59c09ca7cdad91e7466300114548876529277a80651b6436a48d5d9
   languageName: node
   linkType: hard
 
@@ -3628,7 +3657,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-throw-expressions@npm:^7.25.8":
+"@babel/plugin-proposal-throw-expressions@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/plugin-proposal-throw-expressions@npm:7.25.9"
   dependencies:
@@ -4393,7 +4422,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-modules-commonjs@npm:^7.25.7, @babel/plugin-transform-modules-commonjs@npm:^7.25.9":
+"@babel/plugin-transform-modules-commonjs@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/plugin-transform-modules-commonjs@npm:7.25.9"
   dependencies:
@@ -4822,7 +4851,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-runtime@npm:^7.25.7":
+"@babel/plugin-transform-runtime@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/plugin-transform-runtime@npm:7.25.9"
   dependencies:
@@ -5143,7 +5172,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:^7.25.8":
+"@babel/preset-env@npm:^7.26.0":
   version: 7.26.0
   resolution: "@babel/preset-env@npm:7.26.0"
   dependencies:
@@ -5266,7 +5295,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:^7.25.7":
+"@babel/preset-react@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/preset-react@npm:7.25.9"
   dependencies:
@@ -5295,7 +5324,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-typescript@npm:^7.25.7":
+"@babel/preset-typescript@npm:^7.26.0":
   version: 7.26.0
   resolution: "@babel/preset-typescript@npm:7.26.0"
   dependencies:
@@ -5310,7 +5339,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/register@npm:^7.25.7":
+"@babel/register@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/register@npm:7.25.9"
   dependencies:
@@ -5389,7 +5418,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.25.7":
+"@babel/runtime@npm:^7.26.0":
   version: 7.26.0
   resolution: "@babel/runtime@npm:7.26.0"
   dependencies:
@@ -5420,7 +5449,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/template@npm:^7.25.7, @babel/template@npm:^7.25.9":
+"@babel/template@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/template@npm:7.25.9"
   dependencies:
@@ -5431,7 +5460,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/traverse@npm:^7.20.10, @babel/traverse@npm:^7.20.12, @babel/traverse@npm:^7.20.13, @babel/traverse@npm:^7.20.5, @babel/traverse@npm:^7.20.7, @babel/traverse@npm:^7.21.5, @babel/traverse@npm:^7.24.1, @babel/traverse@npm:^7.25.7, @babel/traverse@npm:^7.25.9":
+"@babel/traverse@npm:^7.20.10, @babel/traverse@npm:^7.20.12, @babel/traverse@npm:^7.20.13, @babel/traverse@npm:^7.20.5, @babel/traverse@npm:^7.20.7, @babel/traverse@npm:^7.21.5, @babel/traverse@npm:^7.24.1, @babel/traverse@npm:^7.25.9":
   version: 7.25.9
   resolution: "@babel/traverse@npm:7.25.9"
   dependencies:
@@ -5501,7 +5530,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.24.7, @babel/types@npm:^7.25.8, @babel/types@npm:^7.25.9, @babel/types@npm:^7.26.0":
+"@babel/types@npm:^7.24.7, @babel/types@npm:^7.25.9, @babel/types@npm:^7.26.0":
   version: 7.26.0
   resolution: "@babel/types@npm:7.26.0"
   dependencies:
@@ -14198,7 +14227,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@webiny/api-headless-cms@workspace:packages/api-headless-cms"
   dependencies:
-    "@babel/code-frame": ^7.25.7
+    "@babel/code-frame": ^7.26.2
     "@graphql-tools/merge": ^9.0.4
     "@graphql-tools/schema": ^10.0.6
     "@types/babel__code-frame": ^7.0.6
@@ -15246,7 +15275,7 @@ __metadata:
     react-hotkeyz: ^1.0.4
     react-resizable-panels: ^2.0.19
     react-transition-group: ^4.3.0
-    react-virtualized: ^9.21.2
+    react-virtualized: ^9.22.5
     reset-css: ^5.0.1
     rimraf: ^5.0.5
     store: ^2.0.12
@@ -15610,7 +15639,7 @@ __metadata:
     react-dom: 18.2.0
     react-helmet: ^6.1.0
     react-hotkeyz: ^1.0.4
-    react-virtualized: ^9.21.2
+    react-virtualized: ^9.22.5
     rimraf: ^5.0.5
     ttypescript: ^1.5.12
     typescript: 4.9.5
@@ -15757,7 +15786,6 @@ __metadata:
     "@apollo/react-common": ^3.1.4
     "@apollo/react-components": ^3.1.5
     "@apollo/react-hooks": ^3.1.5
-    "@babel/runtime": ^7.25.7
     "@emotion/babel-plugin": ^11.11.0
     "@emotion/react": ^11.10.6
     "@emotion/styled": ^11.10.6
@@ -16934,7 +16962,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@webiny/i18n@workspace:packages/i18n"
   dependencies:
-    "@babel/register": ^7.25.7
+    "@babel/register": ^7.25.9
     "@types/accounting": ^0.4.2
     "@types/lodash": ^4.14.190
     "@webiny/cli": 0.0.0
@@ -17152,16 +17180,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@webiny/project-utils@workspace:packages/project-utils"
   dependencies:
-    "@babel/cli": ^7.25.7
-    "@babel/core": ^7.25.8
+    "@babel/cli": ^7.25.9
+    "@babel/core": ^7.26.0
     "@babel/plugin-proposal-class-properties": ^7.18.6
     "@babel/plugin-proposal-object-rest-spread": ^7.20.7
-    "@babel/plugin-proposal-throw-expressions": ^7.25.8
+    "@babel/plugin-proposal-throw-expressions": ^7.25.9
     "@babel/plugin-syntax-object-rest-spread": ^7.8.3
-    "@babel/preset-env": ^7.25.8
-    "@babel/preset-react": ^7.25.7
-    "@babel/preset-typescript": ^7.25.7
-    "@babel/runtime": ^7.25.7
+    "@babel/preset-env": ^7.26.0
+    "@babel/preset-react": ^7.25.9
+    "@babel/preset-typescript": ^7.26.0
+    "@babel/runtime": ^7.26.0
     "@elastic/elasticsearch": 7.12.0
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.3
     "@svgr/webpack": ^6.1.1
@@ -35307,23 +35335,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-virtualized@npm:^9.21.2":
-  version: 9.22.3
-  resolution: "react-virtualized@npm:9.22.3"
-  dependencies:
-    "@babel/runtime": ^7.7.2
-    clsx: ^1.0.4
-    dom-helpers: ^5.1.3
-    loose-envify: ^1.4.0
-    prop-types: ^15.7.2
-    react-lifecycles-compat: ^3.0.4
-  peerDependencies:
-    react: ^15.3.0 || ^16.0.0-alpha
-    react-dom: ^15.3.0 || ^16.0.0-alpha
-  checksum: 5e3b566592293bc0057bc6be4f6ee29c58c8931421d2882a3ef45ca9b24c6f3ea78bbc5a182c2916af6520845e5a90f569b3a63c9b5e89428720913e6d6239cc
-  languageName: node
-  linkType: hard
-
 "react-virtualized@npm:^9.22.5":
   version: 9.22.5
   resolution: "react-virtualized@npm:9.22.5"
@@ -36272,23 +36283,23 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    "@babel/cli": ^7.25.7
-    "@babel/code-frame": ^7.25.7
-    "@babel/compat-data": ^7.25.8
-    "@babel/core": ^7.25.8
+    "@babel/cli": ^7.25.9
+    "@babel/code-frame": ^7.26.2
+    "@babel/compat-data": ^7.26.2
+    "@babel/core": ^7.26.0
     "@babel/helper-define-polyfill-provider": ^0.6.2
     "@babel/helper-environment-visitor": ^7.24.7
-    "@babel/parser": ^7.25.8
-    "@babel/plugin-transform-modules-commonjs": ^7.25.7
-    "@babel/plugin-transform-runtime": ^7.25.7
-    "@babel/preset-env": ^7.25.8
-    "@babel/preset-react": ^7.25.7
-    "@babel/preset-typescript": ^7.25.7
-    "@babel/register": ^7.25.7
-    "@babel/runtime": ^7.25.7
-    "@babel/template": ^7.25.7
-    "@babel/traverse": ^7.25.7
-    "@babel/types": ^7.25.8
+    "@babel/parser": ^7.26.2
+    "@babel/plugin-transform-modules-commonjs": ^7.25.9
+    "@babel/plugin-transform-runtime": ^7.25.9
+    "@babel/preset-env": ^7.26.0
+    "@babel/preset-react": ^7.25.9
+    "@babel/preset-typescript": ^7.26.0
+    "@babel/register": ^7.25.9
+    "@babel/runtime": ^7.26.0
+    "@babel/template": ^7.25.9
+    "@babel/traverse": ^7.25.9
+    "@babel/types": ^7.26.0
     "@commitlint/cli": ^11.0.0
     "@commitlint/config-conventional": ^11.0.0
     "@grpc/grpc-js": ^1.11.1
