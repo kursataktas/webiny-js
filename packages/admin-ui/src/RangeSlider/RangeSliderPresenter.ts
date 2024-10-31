@@ -1,59 +1,79 @@
 import { makeAutoObservable } from "mobx";
 import omit from "lodash/omit";
-import { SliderProps as BaseSliderProps } from "@radix-ui/react-slider";
-import { RangeSliderProps } from "./RangeSlider";
-import { SliderThumbProps } from "~/Slider";
+import { RangeSliderProps, RangeSliderThumbsVm, RangeSliderVm } from "./RangeSlider";
 
-interface IRangeSliderPresenter {
-    get sliderVm(): BaseSliderProps;
-    get thumbsVm(): Omit<SliderThumbProps, "value"> & {
-        values: string[];
+interface IRangeSliderPresenter<TProps> {
+    get vm(): {
+        sliderVm: RangeSliderVm;
+        thumbsVm: RangeSliderThumbsVm;
     };
+    init: (props: TProps) => void;
+    changeValues: (values: number[]) => void;
+    commitValues: (values: number[]) => void;
 }
 
-class RangeSliderPresenter implements IRangeSliderPresenter {
+class RangeSliderPresenter implements IRangeSliderPresenter<RangeSliderProps> {
+    private props: RangeSliderProps | undefined;
     private showTooltip: boolean;
-    private localValues: number[];
 
-    constructor(private props: RangeSliderProps) {
-        const { defaultValue, value, min = 0, max = 100 } = props;
+    constructor() {
+        this.props = undefined;
         this.showTooltip = false;
-        this.localValues = defaultValue ?? value ?? [min, max];
         makeAutoObservable(this);
     }
 
-    get sliderVm() {
+    init(props: RangeSliderProps) {
+        this.props = props;
+    }
+
+    get vm() {
         return {
-            ...omit(this.props, ["showTooltip", "tooltipSide", "transformValues"]),
-            defaultValue: this.localValues,
-            onValueChange: this.onValueChange,
-            onValueCommit: this.onValueCommit
+            sliderVm: {
+                ...omit(this.props, [
+                    "showTooltip",
+                    "tooltipSide",
+                    "transformValue",
+                    "onValueChange",
+                    "onValueCommit",
+                    "value"
+                ]),
+                min: this.min,
+                max: this.max,
+                values: this.values
+            },
+            thumbsVm: {
+                values: this.transformToLabelValues(this.values),
+                showTooltip: this.showTooltip,
+                tooltipSide: this.props?.tooltipSide
+            }
         };
     }
 
-    get thumbsVm() {
-        return {
-            values: this.thumbValues,
-            showTooltip: this.showTooltip,
-            tooltipSide: this.props.tooltipSide
-        };
-    }
-
-    private onValueChange = (values: number[]) => {
-        this.localValues = values;
-        this.showTooltip = !!this.props.showTooltip;
-        this.props.onValueChange?.(values);
+    public changeValues = (values: number[]) => {
+        this.showTooltip = !!this.props?.showTooltip;
+        this.props?.onValuesChange?.(values);
     };
 
-    private onValueCommit = (values: number[]): void => {
-        this.localValues = values;
+    public commitValues = (values: number[]) => {
         this.showTooltip = false;
-        this.props.onValueCommit?.(values);
+        this.props?.onValuesCommit?.(values);
     };
 
-    private get thumbValues(): string[] {
-        return this.localValues.map(value =>
-            this.props.transformValues ? this.props.transformValues(value) : String(value)
+    private get min() {
+        return this.props?.min ?? 0;
+    }
+
+    private get max() {
+        return this.props?.max ?? 100;
+    }
+
+    private get values() {
+        return this.props?.values ?? [this.min, this.max];
+    }
+
+    private transformToLabelValues(values: number[]) {
+        return values.map(value =>
+            this.props?.transformValues ? this.props.transformValues(value) : String(value)
         );
     }
 }

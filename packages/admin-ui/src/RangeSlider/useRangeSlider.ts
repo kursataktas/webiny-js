@@ -4,17 +4,19 @@ import { RangeSliderProps } from "./RangeSlider";
 import { RangeSliderPresenter } from "./RangeSliderPresenter";
 
 export const useRangeSlider = (props: RangeSliderProps) => {
-    const presenter = useMemo(() => new RangeSliderPresenter(props), [JSON.stringify(props)]);
-    const [sliderVm, setSliderVm] = useState(presenter.sliderVm);
-    const [thumbsVm, setThumbsVm] = useState(presenter.thumbsVm);
+    const presenter = useMemo(() => new RangeSliderPresenter(), []);
+
+    const [vm, setVm] = useState(presenter.vm);
 
     useEffect(() => {
-        const dispose = autorun(() => {
-            setSliderVm(presenter.sliderVm);
-            setThumbsVm(presenter.thumbsVm);
+        presenter.init(props);
+    }, [props]);
+
+    useEffect(() => {
+        return autorun(() => {
+            setVm(presenter.vm);
         });
-        return () => dispose(); // Cleanup on unmount
     }, [presenter]);
 
-    return { sliderVm, thumbsVm };
+    return { vm, changeValues: presenter.changeValues, commitValues: presenter.commitValues };
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { RangeSlider } from "./RangeSlider";
 
@@ -7,8 +7,8 @@ const meta: Meta<typeof RangeSlider> = {
     component: RangeSlider,
     tags: ["autodocs"],
     argTypes: {
-        onValueChange: { action: "onValueChange" },
-        onValueCommit: { action: "onValueCommit" }
+        onValuesChange: { action: "onValuesChange" },
+        onValuesCommit: { action: "onValuesCommit" }
     },
     parameters: {
         layout: "fullscreen"
@@ -19,7 +19,13 @@ const meta: Meta<typeof RangeSlider> = {
                 <Story />
             </div>
         )
-    ]
+    ],
+    render: args => {
+        const [values, setValues] = useState(args.values);
+        return (
+            <RangeSlider {...args} values={values} onValuesChange={values => setValues(values)} />
+        );
+    }
 };
 
 export default meta;
@@ -29,7 +35,7 @@ export const Default: Story = {};
 
 export const WithDefaultValues: Story = {
     args: {
-        defaultValue: [25, 75]
+        values: [25, 75]
     }
 };
 
@@ -49,7 +55,7 @@ export const WithSteps: Story = {
 export const Disabled: Story = {
     args: {
         disabled: true,
-        defaultValue: [25, 75]
+        values: [25, 75]
     }
 };
 
@@ -72,5 +78,35 @@ export const WithTooltipAndCustomValueTransformer: Story = {
         transformValues: (value: number) => {
             return `${Math.round(value)}%`;
         }
+    }
+};
+
+export const WithExternalValueControl: Story = {
+    args: {
+        showTooltip: true,
+        transformValues: (value: number) => {
+            return `${Math.round(value)}%`;
+        }
+    },
+    render: args => {
+        const defaultValues = [25, 75];
+        const [values, setValues] = useState(defaultValues);
+        return (
+            <div className={"w-full"}>
+                <div>
+                    <RangeSlider
+                        {...args}
+                        values={values}
+                        onValuesChange={values => setValues(values)}
+                    />
+                </div>
+                <div className={"mt-4 text-center"}>
+                    <button onClick={() => setValues(defaultValues)}>{"Reset"}</button>
+                </div>
+                <div className={"mt-4 text-center"}>
+                    Current value: <code>{values.toString()}</code>
+                </div>
+            </div>
+        );
     }
 };

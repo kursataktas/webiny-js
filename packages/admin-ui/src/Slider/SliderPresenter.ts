@@ -3,7 +3,7 @@ import omit from "lodash/omit";
 import { SliderProps as BaseSliderProps } from "@radix-ui/react-slider";
 import { SliderProps, SliderThumbProps } from "./Slider";
 
-interface ISliderVm extends BaseSliderProps {
+export interface ISliderVm extends BaseSliderProps {
     min: number;
 }
 
@@ -58,22 +58,22 @@ class SliderPresenter implements ISliderPresenter<SliderProps> {
         this.props?.onValueChange(newValue);
     };
 
-    public commitValue = (values: number[]): void => {
+    public commitValue = (values: number[]) => {
         const [newValue] = values;
         this.showTooltip = false;
         this.props?.onValueCommit?.(newValue);
     };
 
-    private get value(): BaseSliderProps["value"] {
+    private get value() {
         return this.props?.value !== undefined ? [this.props.value] : undefined;
     }
 
-    private get min(): number {
+    private get min() {
         return this.props?.min ?? 0;
     }
 
-    private transformToLabelValue(value?: number): string | undefined {
-        if (!value) {
+    private transformToLabelValue(value?: number) {
+        if (typeof value === "undefined") {
             return;
         }
         return this.props?.transformValue ? this.props.transformValue(value) : String(value);

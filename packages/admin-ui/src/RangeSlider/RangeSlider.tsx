@@ -4,21 +4,42 @@ import { makeDecoratable } from "@webiny/react-composition";
 import { SliderRoot, SliderThumb, SliderThumbProps, SliderTrack } from "~/Slider";
 import { useRangeSlider } from "./useRangeSlider";
 
-/**
- * ComposableRangeSlider
- */
-type SliderThumbsProps = Omit<SliderThumbProps, "value"> & {
+type RangeSliderVm = Omit<
+    SliderPrimitive.SliderProps,
+    "value" | "min" | "max" | "onValueChange" | "onValueCommit"
+> & {
+    values: number[];
+    min: number;
+    max: number;
+};
+
+type RangeSliderThumbsVm = Omit<SliderThumbProps, "value"> & {
     values: string[];
 };
 
-interface ComposableRangeSliderProps {
-    sliderVm: SliderPrimitive.SliderProps;
-    thumbsVm: SliderThumbsProps;
+/**
+ * ComposableRangeSlider
+ */
+interface RangeSliderRendererProps {
+    sliderVm: RangeSliderVm;
+    thumbsVm: RangeSliderThumbsVm;
+    onValuesChange: (values: number[]) => void;
+    onValuesCommit: (values: number[]) => void;
 }
 
-const DecoratorableComposableRangeSlider = ({ sliderVm, thumbsVm }: ComposableRangeSliderProps) => {
+const DecoratorableRangeSliderRenderer = ({
+    sliderVm,
+    thumbsVm,
+    onValuesChange,
+    onValuesCommit
+}: RangeSliderRendererProps) => {
     return (
-        <SliderRoot {...sliderVm}>
+        <SliderRoot
+            {...sliderVm}
+            value={sliderVm.values}
+            onValueChange={onValuesChange}
+            onValueCommit={onValuesCommit}
+        >
             <SliderTrack />
             <SliderThumb {...thumbsVm} value={thumbsVm.values[0]} />
             <SliderThumb {...thumbsVm} value={thumbsVm.values[1]} />
@@ -26,26 +47,46 @@ const DecoratorableComposableRangeSlider = ({ sliderVm, thumbsVm }: ComposableRa
     );
 };
 
-const ComposableRangeSlider = makeDecoratable(
-    "ComposableRangeSlider",
-    DecoratorableComposableRangeSlider
+const RangeSliderRenderer = makeDecoratable(
+    "RangeSliderRenderer",
+    DecoratorableRangeSliderRenderer
 );
 
 /**
  * RangeSlider
  */
-type RangeSliderProps = SliderPrimitive.SliderProps & {
+interface RangeSliderProps
+    extends Omit<
+        SliderPrimitive.SliderProps,
+        "defaultValue" | "value" | "onValueChange" | "onValueCommit"
+    > {
+    values?: number[] | undefined;
+    onValuesChange?: (values: number[]) => void;
+    onValuesCommit?: (values: number[]) => void;
     transformValues?: (value: number) => string;
     showTooltip?: boolean;
     tooltipSide?: "top" | "bottom";
-};
+}
 
 const DecoratableRangeSlider = (props: RangeSliderProps) => {
-    const { sliderVm, thumbsVm } = useRangeSlider(props);
+    const { vm, changeValues, commitValues } = useRangeSlider(props);
 
-    return <ComposableRangeSlider sliderVm={sliderVm} thumbsVm={thumbsVm} />;
+    return (
+        <RangeSliderRenderer
+            sliderVm={vm.sliderVm}
+            thumbsVm={vm.thumbsVm}
+            onValuesChange={changeValues}
+            onValuesCommit={commitValues}
+        />
+    );
 };
 
 const RangeSlider = makeDecoratable("RangeSlider", DecoratableRangeSlider);
 
-export { RangeSlider, ComposableRangeSlider, type RangeSliderProps, type SliderThumbsProps };
+export {
+    RangeSlider,
+    RangeSliderRenderer,
+    type RangeSliderProps,
+    type RangeSliderVm,
+    type RangeSliderThumbsVm
+};

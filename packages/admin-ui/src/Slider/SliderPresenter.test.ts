@@ -98,7 +98,7 @@ describe("SliderPresenter", () => {
             presenter.init({ onValueChange });
             expect(presenter.vm.thumbVm.value).toEqual(undefined);
             expect(presenter.vm.thumbVm.showTooltip).toEqual(false);
-            expect(presenter.vm.thumbVm.tooltipSide).toEqual(undefined);
+            expect(presenter.vm.thumbVm.tooltipSide).toBeUndefined();
         }
     });
 
@@ -109,10 +109,10 @@ describe("SliderPresenter", () => {
     });
 
     it("should apply `transformValue` function if provided", () => {
-        const transformValue = (value: number) => `${value}%`;
+        const transformValue = (value: number) => `${value} units`;
         const presenter = new SliderPresenter();
         presenter.init({ onValueChange, value: 30, transformValue });
-        expect(presenter.vm.thumbVm.value).toEqual("30%");
+        expect(presenter.vm.thumbVm.value).toEqual("30 units");
     });
 
     it("should fall back to `value` as a string if `transformValue` is undefined", () => {

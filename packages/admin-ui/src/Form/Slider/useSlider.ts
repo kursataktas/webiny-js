@@ -6,7 +6,6 @@ import { FormSliderPresenter } from "./SliderPresenter";
 
 export const useSlider = (props: SliderProps) => {
     const presenter = useMemo(() => {
-        console.log("creating FormSlider presenter");
         const sliderPresenter = new SliderPresenter();
         return new FormSliderPresenter(sliderPresenter);
     }, []);
