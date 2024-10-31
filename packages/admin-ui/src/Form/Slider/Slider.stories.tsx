@@ -19,7 +19,11 @@ const meta: Meta<typeof Slider> = {
                 <Story />
             </div>
         )
-    ]
+    ],
+    render: args => {
+        const [value, setValue] = useState(args.value);
+        return <Slider {...args} value={value} onValueChange={value => setValue(value)} />;
+    }
 };
 
 export default meta;
@@ -34,7 +38,7 @@ export const Default: Story = {
 export const WithDefaultValue: Story = {
     args: {
         label: "Label",
-        defaultValue: 50
+        value: 50
     }
 };
 
@@ -51,7 +55,7 @@ export const WithNegativeMinValue: Story = {
         label: "Label",
         min: -100,
         max: 100,
-        defaultValue: 0
+        value: 0
     }
 };
 
@@ -124,14 +128,15 @@ export const WithExternalValueControl: Story = {
         label: "Label"
     },
     render: args => {
-        const [value, setValue] = useState(0);
+        const defaultValue = 50;
+        const [value, setValue] = useState(defaultValue);
         return (
             <div className={"w-full"}>
                 <div>
                     <Slider {...args} value={value} onValueChange={value => setValue(value)} />
                 </div>
                 <div className={"mt-4 text-center"}>
-                    <button onClick={() => setValue(0)}>{"Reset"}</button>
+                    <button onClick={() => setValue(defaultValue)}>{"Reset"}</button>
                 </div>
             </div>
         );

@@ -101,10 +101,10 @@ const SliderWithSideValue = makeDecoratable(
 /**
  * Slider
  */
-const DecoratableFormSlider = ({ labelPosition, ...props }: SliderProps) => {
+const DecoratableFormSlider = (props: SliderProps) => {
     const { vm, changeValue, commitValue } = useSlider(props);
 
-    if (labelPosition === "side") {
+    if (vm.labelVm.position === "side") {
         return (
             <SliderWithSideValue
                 sliderVm={vm.sliderVm}

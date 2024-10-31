@@ -3,9 +3,13 @@ import omit from "lodash/omit";
 import { SliderProps as BaseSliderProps } from "@radix-ui/react-slider";
 import { SliderProps, SliderThumbProps } from "./Slider";
 
+interface ISliderVm extends BaseSliderProps {
+    min: number;
+}
+
 interface ISliderPresenter<TProps> {
     get vm(): {
-        sliderVm: BaseSliderProps;
+        sliderVm: ISliderVm;
         thumbVm: SliderThumbProps;
     };
     init: (props: TProps) => void;
@@ -15,20 +19,16 @@ interface ISliderPresenter<TProps> {
 
 class SliderPresenter implements ISliderPresenter<SliderProps> {
     private props: SliderProps | undefined;
-    private localValue: number;
     private showTooltip: boolean;
 
     constructor() {
         this.props = undefined;
-        this.localValue = 0;
         this.showTooltip = false;
         makeAutoObservable(this);
     }
 
     init(props: SliderProps) {
-        const { defaultValue, value, min } = props;
         this.props = props;
-        this.localValue = defaultValue ?? value ?? min ?? this.localValue;
     }
 
     get vm() {
@@ -42,10 +42,10 @@ class SliderPresenter implements ISliderPresenter<SliderProps> {
                     "onValueCommit"
                 ]),
                 value: this.value,
-                defaultValue: this.defaultValue
+                min: this.min
             },
             thumbVm: {
-                value: this.transformToLabelValue(this.localValue),
+                value: this.transformToLabelValue(this.value?.[0]),
                 showTooltip: this.showTooltip,
                 tooltipSide: this.props?.tooltipSide
             }
@@ -54,14 +54,12 @@ class SliderPresenter implements ISliderPresenter<SliderProps> {
 
     public changeValue = (values: number[]) => {
         const [newValue] = values;
-        this.localValue = newValue;
         this.showTooltip = !!this.props?.showTooltip;
-        this.props?.onValueChange?.(newValue);
+        this.props?.onValueChange(newValue);
     };
 
     public commitValue = (values: number[]): void => {
         const [newValue] = values;
-        this.localValue = newValue;
         this.showTooltip = false;
         this.props?.onValueCommit?.(newValue);
     };
@@ -70,11 +68,14 @@ class SliderPresenter implements ISliderPresenter<SliderProps> {
         return this.props?.value !== undefined ? [this.props.value] : undefined;
     }
 
-    private get defaultValue(): BaseSliderProps["defaultValue"] {
-        return this.props?.defaultValue !== undefined ? [this.props.defaultValue] : undefined;
+    private get min(): number {
+        return this.props?.min ?? 0;
     }
 
-    private transformToLabelValue(value: number): string {
+    private transformToLabelValue(value?: number): string | undefined {
+        if (!value) {
+            return;
+        }
         return this.props?.transformValue ? this.props.transformValue(value) : String(value);
     }
 }

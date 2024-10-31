@@ -6,22 +6,15 @@ import omit from "lodash/omit";
 class FormSliderPresenter implements ISliderPresenter<SliderProps> {
     private sliderPresenter: ISliderPresenter<BaseSliderProps>;
     private props: SliderProps | undefined;
-    private localValue: number;
 
     constructor(sliderPresenter: ISliderPresenter<BaseSliderProps>) {
         this.sliderPresenter = sliderPresenter;
-        this.props = undefined;
-        this.localValue = 0;
         makeAutoObservable(this);
     }
 
     init(props: SliderProps) {
-        this.sliderPresenter.init(omit(props, ["label", "labelPosition"]));
-        const { defaultValue, value, min } = props;
         this.props = props;
-
-        console.log("FormSliderPresenter props", props);
-        this.localValue = defaultValue ?? value ?? min ?? this.localValue;
+        this.sliderPresenter.init(omit(props, ["label", "labelPosition"]));
     }
 
     get vm() {
@@ -34,20 +27,20 @@ class FormSliderPresenter implements ISliderPresenter<SliderProps> {
             },
             labelVm: {
                 label: this.props?.label ?? "",
-                value: this.transformToLabelValue(this.localValue)
+                position: this.props?.labelPosition ?? "top",
+                value: this.transformToLabelValue(
+                    this.sliderPresenter.vm.sliderVm.value?.[0] ??
+                        this.sliderPresenter.vm.sliderVm.min
+                )
             }
         };
     }
 
     public changeValue = (values: number[]): void => {
-        const [newValue] = values;
-        this.localValue = newValue;
         this.sliderPresenter.changeValue(values);
     };
 
     public commitValue = (values: number[]): void => {
-        const [newValue] = values;
-        this.localValue = newValue;
         this.sliderPresenter.commitValue(values);
     };
 

@@ -118,9 +118,8 @@ interface SliderProps
         SliderPrimitive.SliderProps,
         "defaultValue" | "value" | "onValueChange" | "onValueCommit"
     > {
-    defaultValue?: number;
-    onValueChange?(value: number): void;
-    onValueCommit?(value: number): void;
+    onValueChange: (value: number) => void;
+    onValueCommit?: (value: number) => void;
     showTooltip?: boolean;
     tooltipSide?: "top" | "bottom";
     transformValue?: (value: number) => string;

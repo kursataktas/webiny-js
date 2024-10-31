@@ -8,12 +8,14 @@ export const useSlider = (props: SliderProps) => {
     const presenter = useMemo(() => {
         console.log("creating FormSlider presenter");
         const sliderPresenter = new SliderPresenter();
-        const formSliderPresenter = new FormSliderPresenter(sliderPresenter);
-        formSliderPresenter.init(props);
-        return formSliderPresenter;
-    }, [JSON.stringify(props)]);
+        return new FormSliderPresenter(sliderPresenter);
+    }, []);
 
     const [vm, setVm] = useState(presenter.vm);
+
+    useEffect(() => {
+        presenter.init(props);
+    }, [props]);
 
     useEffect(() => {
         return autorun(() => {
