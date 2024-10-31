@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import omit from "lodash/omit";
 import { autorun } from "mobx";
 import { SliderProps } from "./Slider";
 import { SliderPresenter } from "~/Slider";
@@ -7,21 +6,20 @@ import { FormSliderPresenter } from "./SliderPresenter";
 
 export const useSlider = (props: SliderProps) => {
     const presenter = useMemo(() => {
-        const sliderPresenter = new SliderPresenter(omit(props, ["label", "labelPosition"]));
-        return new FormSliderPresenter(props, sliderPresenter);
+        console.log("creating FormSlider presenter");
+        const sliderPresenter = new SliderPresenter();
+        const formSliderPresenter = new FormSliderPresenter(sliderPresenter);
+        formSliderPresenter.init(props);
+        return formSliderPresenter;
     }, [JSON.stringify(props)]);
-    const [sliderVm, setSliderVm] = useState(presenter.sliderVm);
-    const [thumbVm, setThumbVm] = useState(presenter.thumbVm);
-    const [labelVm, setLabelVm] = useState(presenter.labelVm);
+
+    const [vm, setVm] = useState(presenter.vm);
 
     useEffect(() => {
-        const dispose = autorun(() => {
-            setSliderVm(presenter.sliderVm);
-            setThumbVm(presenter.thumbVm);
-            setLabelVm(presenter.labelVm);
+        return autorun(() => {
+            setVm(presenter.vm);
         });
-        return () => dispose(); // Cleanup on unmount
     }, [presenter]);
 
-    return { sliderVm, thumbVm, labelVm };
+    return { vm, changeValue: presenter.changeValue, commitValue: presenter.commitValue };
 };

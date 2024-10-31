@@ -2,7 +2,7 @@ import * as React from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import { makeDecoratable } from "@webiny/react-composition";
 import { Label } from "~/Label";
-import { ComposableSlider, SliderProps as BaseSliderProps, SliderThumbProps } from "~/Slider";
+import { SliderRenderer, SliderProps as BaseSliderProps, SliderThumbProps } from "~/Slider";
 import { useSlider } from "./useSlider";
 
 /**
@@ -30,6 +30,8 @@ interface DecoratorableSliderProps {
     sliderVm: SliderPrimitive.SliderProps;
     thumbVm: SliderThumbProps;
     labelVm: SliderValueProps & { label: React.ReactNode };
+    onValueChange: (values: number[]) => void;
+    onValueCommit: (values: number[]) => void;
 }
 
 /**
@@ -38,7 +40,9 @@ interface DecoratorableSliderProps {
 const DecoratorableSliderWithTopValue = ({
     sliderVm,
     thumbVm,
-    labelVm
+    labelVm,
+    onValueChange,
+    onValueCommit
 }: DecoratorableSliderProps) => {
     return (
         <div className={"w-full"}>
@@ -46,7 +50,12 @@ const DecoratorableSliderWithTopValue = ({
                 <Label weight={"light"} text={labelVm.label} value={labelVm.value} />
             </div>
             <div>
-                <ComposableSlider sliderVm={sliderVm} thumbVm={thumbVm} />
+                <SliderRenderer
+                    sliderVm={sliderVm}
+                    thumbVm={thumbVm}
+                    onValueChange={onValueChange}
+                    onValueCommit={onValueCommit}
+                />
             </div>
         </div>
     );
@@ -59,7 +68,9 @@ const SliderWithTopValue = makeDecoratable("SliderWithTopValue", DecoratorableSl
 const DecoratorableSliderWithSideValue = ({
     sliderVm,
     thumbVm,
-    labelVm
+    labelVm,
+    onValueChange,
+    onValueCommit
 }: DecoratorableSliderProps) => {
     return (
         <div className={"w-full flex flex-row items-center justify-between"}>
@@ -67,7 +78,12 @@ const DecoratorableSliderWithSideValue = ({
                 <Label text={labelVm.label} weight={"light"} />
             </div>
             <div className={"basis-9/12"}>
-                <ComposableSlider sliderVm={sliderVm} thumbVm={thumbVm} />
+                <SliderRenderer
+                    sliderVm={sliderVm}
+                    thumbVm={thumbVm}
+                    onValueChange={onValueChange}
+                    onValueCommit={onValueCommit}
+                />
             </div>
             {labelVm.value && (
                 <div className={"basis-1/12 pl-2 text-right"}>
@@ -86,13 +102,29 @@ const SliderWithSideValue = makeDecoratable(
  * Slider
  */
 const DecoratableFormSlider = ({ labelPosition, ...props }: SliderProps) => {
-    const { sliderVm, thumbVm, labelVm } = useSlider(props);
+    const { vm, changeValue, commitValue } = useSlider(props);
 
     if (labelPosition === "side") {
-        return <SliderWithSideValue sliderVm={sliderVm} thumbVm={thumbVm} labelVm={labelVm} />;
+        return (
+            <SliderWithSideValue
+                sliderVm={vm.sliderVm}
+                thumbVm={vm.thumbVm}
+                labelVm={vm.labelVm}
+                onValueChange={changeValue}
+                onValueCommit={commitValue}
+            />
+        );
     }
 
-    return <SliderWithTopValue sliderVm={sliderVm} thumbVm={thumbVm} labelVm={labelVm} />;
+    return (
+        <SliderWithTopValue
+            sliderVm={vm.sliderVm}
+            thumbVm={vm.thumbVm}
+            labelVm={vm.labelVm}
+            onValueChange={changeValue}
+            onValueCommit={commitValue}
+        />
+    );
 };
 
 const Slider = makeDecoratable("Slider", DecoratableFormSlider);

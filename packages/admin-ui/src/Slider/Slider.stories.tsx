@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Slider } from "./Slider";
 
@@ -80,5 +80,32 @@ export const WithTooltipAndCustomValueTransformer: Story = {
         transformValue: (value: number) => {
             return `${Math.round(value)}%`;
         }
+    }
+};
+
+export const WithExternalValueControl: Story = {
+    args: {
+        value: 50,
+        defaultValue: 50,
+        showTooltip: true,
+        transformValue: (value: number) => {
+            return `${Math.round(value)}%`;
+        }
+    },
+    render: args => {
+        const [value, setValue] = useState(0);
+        return (
+            <div className={"w-full"}>
+                <div>
+                    <Slider {...args} value={value} onValueChange={value => setValue(value)} />
+                </div>
+                <div className={"mt-4 text-center"}>
+                    <button onClick={() => setValue(0)}>{"Reset"}</button>
+                </div>
+                <div className={"mt-4 text-center"}>
+                    Current value: <code>{value}</code>
+                </div>
+            </div>
+        );
     }
 };
