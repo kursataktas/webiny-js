@@ -276,28 +276,30 @@ const DecoratableSelectOptions = (props: SelectOptionsProps) => {
 const SelectOptions = makeDecoratable("SelectOptions", DecoratableSelectOptions);
 
 /**
- * ComposableSelect
+ * SelectRenderer
  */
-interface ComposableSelectProps {
+interface SelectRendererProps {
     selectVm: SelectPrimitive.SelectProps;
     selectTriggerVm: SelectPrimitive.SelectValueProps;
     selectOptionsVm: SelectOptionsProps;
+    onValueChange: (value: string) => void;
 }
 
-const DecoratableComposableSelect = ({
+const DecoratableSelectRenderer = ({
     selectVm,
     selectTriggerVm,
-    selectOptionsVm
-}: ComposableSelectProps) => {
+    selectOptionsVm,
+    onValueChange
+}: SelectRendererProps) => {
     return (
-        <SelectRoot {...selectVm}>
+        <SelectRoot {...selectVm} onValueChange={onValueChange}>
             <SelectTrigger {...selectTriggerVm} />
             <SelectOptions {...selectOptionsVm} />
         </SelectRoot>
     );
 };
 
-const ComposableSelect = makeDecoratable("ComposableSelect", DecoratableComposableSelect);
+const SelectRenderer = makeDecoratable("SelectRenderer", DecoratableSelectRenderer);
 
 /**
  * Select
@@ -314,17 +316,19 @@ type SelectOption = FormattedOption | string;
 
 type SelectProps = SelectPrimitive.SelectProps & {
     placeholder?: string;
+    onValueChange: (value: string) => void;
     options?: SelectOption[];
 };
 
 const DecoratableSelect = (props: SelectProps) => {
-    const { selectVm, selectTriggerVm, selectOptionsVm } = useSelect(props);
+    const { vm, changeValue } = useSelect(props);
 
     return (
-        <ComposableSelect
-            selectVm={selectVm}
-            selectTriggerVm={selectTriggerVm}
-            selectOptionsVm={selectOptionsVm}
+        <SelectRenderer
+            selectVm={vm.selectVm}
+            selectTriggerVm={vm.selectTriggerVm}
+            selectOptionsVm={vm.selectOptionsVm}
+            onValueChange={changeValue}
         />
     );
 };
@@ -333,7 +337,7 @@ const Select = makeDecoratable("Select", DecoratableSelect);
 
 export {
     Select,
-    ComposableSelect,
+    SelectRenderer,
     type SelectProps,
     type FormattedOption,
     type SelectOption,

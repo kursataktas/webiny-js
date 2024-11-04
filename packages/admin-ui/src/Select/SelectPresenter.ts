@@ -4,37 +4,48 @@ import omit from "lodash/omit";
 import { SelectOptionsProps, SelectProps } from "./Select";
 
 interface ISelectPresenter {
-    selectVm: SelectPrimitive.SelectProps;
-    selectTriggerVm: SelectPrimitive.SelectValueProps;
-    selectOptionsVm: SelectOptionsProps;
+    vm: {
+        selectVm: SelectPrimitive.SelectProps;
+        selectTriggerVm: SelectPrimitive.SelectValueProps;
+        selectOptionsVm: SelectOptionsProps;
+    };
+    init: (props: SelectProps) => void;
+    changeValue: (value: string) => void;
 }
 
 class SelectPresenter implements ISelectPresenter {
-    constructor(private props: SelectProps) {
+    private props?: SelectProps;
+
+    constructor() {
+        this.props = undefined;
         makeAutoObservable(this);
     }
 
-    get selectVm() {
+    init(props: SelectProps) {
+        this.props = props;
+    }
+
+    get vm() {
         return {
-            ...omit(this.props, ["placeholder", "options"]),
-            options: this.options
+            selectVm: {
+                ...omit(this.props, ["placeholder", "options"]),
+                options: this.options
+            },
+            selectTriggerVm: {
+                placeholder: this.props?.placeholder || "Choose a value"
+            },
+            selectOptionsVm: {
+                options: this.options
+            }
         };
     }
 
-    get selectTriggerVm() {
-        return {
-            placeholder: this.props.placeholder || "Choose a value"
-        };
-    }
-
-    get selectOptionsVm() {
-        return {
-            options: this.options
-        };
-    }
+    public changeValue = (value: string) => {
+        this.props?.onValueChange(value);
+    };
 
     private get options() {
-        if (!this.props.options) {
+        if (!this.props?.options) {
             return [];
         }
 
