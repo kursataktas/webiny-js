@@ -53,13 +53,10 @@ interface TriggerProps
 const DecoratableTrigger = React.forwardRef<
     React.ElementRef<typeof SelectPrimitive.Trigger>,
     TriggerProps
->(({ className, children, ...props }, ref) => (
+>(({ className, children, size, variant, ...props }, ref) => (
     <SelectPrimitive.Trigger
         ref={ref}
-        className={cn(
-            "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-            className
-        )}
+        className={cn(triggerVariants({ variant, size, className }))}
         {...props}
     >
         {children}
@@ -218,11 +215,14 @@ const SelectSeparator = makeDecoratable("SelectSeparator", DecoratableSelectSepa
 /**
  * Trigger
  */
-type SelectTriggerVm = SelectPrimitive.SelectValueProps;
+type SelectTriggerVm = SelectPrimitive.SelectValueProps & {
+    size: VariantProps<typeof triggerVariants>["size"];
+    variant: VariantProps<typeof triggerVariants>["variant"];
+};
 
-const DecoratableSelectTrigger = (props: SelectTriggerVm) => {
+const DecoratableSelectTrigger = ({ size, variant, ...props }: SelectTriggerVm) => {
     return (
-        <Trigger>
+        <Trigger size={size} variant={variant}>
             <SelectValue {...props} />
         </Trigger>
     );
@@ -314,6 +314,8 @@ type SelectProps = SelectPrimitive.SelectProps & {
     placeholder?: string;
     onValueChange: (value: string) => void;
     options?: SelectOption[];
+    size?: VariantProps<typeof triggerVariants>["size"];
+    variant?: VariantProps<typeof triggerVariants>["variant"];
 };
 
 const DecoratableSelect = (props: SelectProps) => {

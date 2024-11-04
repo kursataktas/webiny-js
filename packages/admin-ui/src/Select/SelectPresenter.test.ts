@@ -45,11 +45,27 @@ describe("SelectPresenter", () => {
             expect(presenter.vm.selectTriggerVm.placeholder).toEqual("Custom placeholder");
         }
 
+        // `size`
+        {
+            const presenter = new SelectPresenter();
+            presenter.init({ onValueChange, size: "xl" });
+            expect(presenter.vm.selectTriggerVm.size).toEqual("xl");
+        }
+
+        // `variant`
+        {
+            const presenter = new SelectPresenter();
+            presenter.init({ onValueChange, variant: "secondary" });
+            expect(presenter.vm.selectTriggerVm.variant).toEqual("secondary");
+        }
+
         {
             // default: no props
             const presenter = new SelectPresenter();
             presenter.init({ onValueChange });
             expect(presenter.vm.selectTriggerVm.placeholder).toEqual("Choose a value");
+            expect(presenter.vm.selectTriggerVm.size).toEqual(undefined);
+            expect(presenter.vm.selectTriggerVm.variant).toEqual(undefined);
         }
     });
 

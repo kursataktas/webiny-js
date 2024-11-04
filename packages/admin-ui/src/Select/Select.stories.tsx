@@ -38,6 +38,48 @@ export const Default: Story = {
     }
 };
 
+export const PrimaryVariant: Story = {
+    args: {
+        ...Default.args,
+        variant: "primary"
+    }
+};
+
+export const SecondaryVariant: Story = {
+    args: {
+        ...Default.args,
+        variant: "secondary"
+    }
+};
+
+export const QuietVariant: Story = {
+    args: {
+        ...Default.args,
+        variant: "quiet"
+    }
+};
+
+export const MediumSize: Story = {
+    args: {
+        ...Default.args,
+        size: "md"
+    }
+};
+
+export const LargeSize: Story = {
+    args: {
+        ...Default.args,
+        size: "lg"
+    }
+};
+
+export const ExtraLargeSize: Story = {
+    args: {
+        ...Default.args,
+        size: "xl"
+    }
+};
+
 export const WithCustomPlaceholder: Story = {
     args: {
         placeholder: "Custom placeholder"
