@@ -18,7 +18,7 @@ type RangeSliderThumbsVm = Omit<SliderThumbVm, "value"> & {
 };
 
 /**
- * ComposableRangeSlider
+ * RangeSliderRenderer
  */
 interface RangeSliderRendererProps {
     sliderVm: RangeSliderVm;
