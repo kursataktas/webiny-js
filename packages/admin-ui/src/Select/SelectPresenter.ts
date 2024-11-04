@@ -1,15 +1,14 @@
 import { makeAutoObservable } from "mobx";
-import * as SelectPrimitive from "@radix-ui/react-select";
 import omit from "lodash/omit";
-import { SelectOptionsProps, SelectProps } from "./Select";
+import { SelectOptionsVm, SelectProps, SelectTriggerVm, SelectVm } from "./Select";
 import { SelectOption } from "./SelectOption";
 import { SelectOptionMapper } from "~/Select/SelectOptionMapper";
 
 interface ISelectPresenter {
     vm: {
-        selectVm: SelectPrimitive.SelectProps;
-        selectTriggerVm: SelectPrimitive.SelectValueProps;
-        selectOptionsVm: SelectOptionsProps;
+        selectVm: SelectVm;
+        selectTriggerVm: SelectTriggerVm;
+        selectOptionsVm: SelectOptionsVm;
     };
     init: (props: SelectProps) => void;
     changeValue: (value: string) => void;

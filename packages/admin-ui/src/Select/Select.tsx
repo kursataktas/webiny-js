@@ -10,6 +10,8 @@ import { useSelect } from "./useSelect";
 import { SelectOptionDto } from "~/Select/SelectOptionDto";
 import { SelectOptionFormatted } from "~/Select/SelectOptionFormatted";
 
+type SelectVm = SelectPrimitive.SelectProps;
+
 const SelectRoot = SelectPrimitive.Root;
 
 const SelectGroup = SelectPrimitive.Group;
@@ -216,9 +218,9 @@ const SelectSeparator = makeDecoratable("SelectSeparator", DecoratableSelectSepa
 /**
  * Trigger
  */
-type SelectTriggerProps = SelectPrimitive.SelectValueProps;
+type SelectTriggerVm = SelectPrimitive.SelectValueProps;
 
-const DecoratableSelectTrigger = (props: SelectTriggerProps) => {
+const DecoratableSelectTrigger = (props: SelectTriggerVm) => {
     return (
         <Trigger>
             <SelectValue {...props} />
@@ -231,16 +233,16 @@ const SelectTrigger = makeDecoratable("SelectTrigger", DecoratableSelectTrigger)
 /**
  * SelectOptions
  */
-interface SelectOptionsProps {
+interface SelectOptionsVm {
     options: SelectOptionFormatted[];
 }
 
-const DecoratableSelectOptions = (props: SelectOptionsProps) => {
+const DecoratableSelectOptions = (props: SelectOptionsVm) => {
     const renderOptions = React.useCallback((items: SelectOptionFormatted[]) => {
         return items.flatMap((item, index) => {
             const elements = [];
 
-            if (item.options && item.options.length > 0) {
+            if (item.options.length > 0) {
                 // Render as a group if there are nested options
                 elements.push(
                     <SelectGroup key={`group-${index}`}>
@@ -281,9 +283,9 @@ const SelectOptions = makeDecoratable("SelectOptions", DecoratableSelectOptions)
  * SelectRenderer
  */
 interface SelectRendererProps {
-    selectVm: SelectPrimitive.SelectProps;
-    selectTriggerVm: SelectPrimitive.SelectValueProps;
-    selectOptionsVm: SelectOptionsProps;
+    selectVm: SelectVm;
+    selectTriggerVm: SelectTriggerVm;
+    selectOptionsVm: SelectOptionsVm;
     onValueChange: (value: string) => void;
 }
 
@@ -329,4 +331,11 @@ const DecoratableSelect = (props: SelectProps) => {
 
 const Select = makeDecoratable("Select", DecoratableSelect);
 
-export { Select, SelectRenderer, type SelectProps, type SelectOption, type SelectOptionsProps };
+export {
+    Select,
+    SelectRenderer,
+    type SelectProps,
+    type SelectVm,
+    type SelectTriggerVm,
+    type SelectOptionsVm
+};
