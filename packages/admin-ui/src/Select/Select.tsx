@@ -7,6 +7,8 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "~/utils";
 import { useSelect } from "./useSelect";
+import { SelectOptionDto } from "~/Select/SelectOptionDto";
+import { SelectOptionFormatted } from "~/Select/SelectOptionFormatted";
 
 const SelectRoot = SelectPrimitive.Root;
 
@@ -230,11 +232,11 @@ const SelectTrigger = makeDecoratable("SelectTrigger", DecoratableSelectTrigger)
  * SelectOptions
  */
 interface SelectOptionsProps {
-    options: FormattedOption[];
+    options: SelectOptionFormatted[];
 }
 
 const DecoratableSelectOptions = (props: SelectOptionsProps) => {
-    const renderOptions = React.useCallback((items: FormattedOption[]) => {
+    const renderOptions = React.useCallback((items: SelectOptionFormatted[]) => {
         return items.flatMap((item, index) => {
             const elements = [];
 
@@ -304,15 +306,7 @@ const SelectRenderer = makeDecoratable("SelectRenderer", DecoratableSelectRender
 /**
  * Select
  */
-interface FormattedOption {
-    label: React.ReactNode;
-    value?: string;
-    options?: FormattedOption[];
-    disabled?: boolean;
-    separator?: boolean;
-}
-
-type SelectOption = FormattedOption | string;
+type SelectOption = SelectOptionDto | string;
 
 type SelectProps = SelectPrimitive.SelectProps & {
     placeholder?: string;
@@ -335,11 +329,4 @@ const DecoratableSelect = (props: SelectProps) => {
 
 const Select = makeDecoratable("Select", DecoratableSelect);
 
-export {
-    Select,
-    SelectRenderer,
-    type SelectProps,
-    type FormattedOption,
-    type SelectOption,
-    type SelectOptionsProps
-};
+export { Select, SelectRenderer, type SelectProps, type SelectOption, type SelectOptionsProps };

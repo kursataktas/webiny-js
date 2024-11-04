@@ -2,6 +2,8 @@ import { makeAutoObservable } from "mobx";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import omit from "lodash/omit";
 import { SelectOptionsProps, SelectProps } from "./Select";
+import { SelectOption } from "./SelectOption";
+import { SelectOptionMapper } from "~/Select/SelectOptionMapper";
 
 interface ISelectPresenter {
     vm: {
@@ -15,6 +17,7 @@ interface ISelectPresenter {
 
 class SelectPresenter implements ISelectPresenter {
     private props?: SelectProps;
+    private options?: SelectOption[];
 
     constructor() {
         this.props = undefined;
@@ -23,19 +26,19 @@ class SelectPresenter implements ISelectPresenter {
 
     init(props: SelectProps) {
         this.props = props;
+        this.options = this.transformOptions(props.options);
     }
 
     get vm() {
         return {
             selectVm: {
-                ...omit(this.props, ["placeholder", "options"]),
-                options: this.options
+                ...omit(this.props, ["placeholder", "options"])
             },
             selectTriggerVm: {
                 placeholder: this.props?.placeholder || "Choose a value"
             },
             selectOptionsVm: {
-                options: this.options
+                options: this.options?.map(option => SelectOptionMapper.toFormatted(option)) ?? []
             }
         };
     }
@@ -44,31 +47,22 @@ class SelectPresenter implements ISelectPresenter {
         this.props?.onValueChange(value);
     };
 
-    private get options() {
-        if (!this.props?.options) {
+    private transformOptions(options: SelectProps["options"]): SelectOption[] {
+        if (!options) {
             return [];
         }
 
-        const options = [];
+        const result = [];
 
-        for (const option of this.props.options) {
+        for (const option of options) {
             if (typeof option === "string") {
-                options.push({
-                    value: option,
-                    label: option
-                });
+                result.push(SelectOption.createFromString(option));
                 continue;
             }
-            options.push({
-                label: option.label,
-                value: option.value,
-                options: option.options,
-                disabled: option.disabled,
-                separator: option.separator
-            });
+            result.push(SelectOption.create(option));
         }
 
-        return options;
+        return result;
     }
 }
 
