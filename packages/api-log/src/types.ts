@@ -1,10 +1,13 @@
-import { DbContext } from "@webiny/handler-db/types";
 import { TenancyContext } from "@webiny/api-tenancy/types";
 import { I18NContext } from "@webiny/api-i18n/types";
 import { GenericRecord } from "@webiny/api/types";
 
+export interface ILoggerLogCallableOptions {
+    tenant?: string;
+    locale?: string;
+}
 export interface ILoggerLogCallable {
-    (source: string, data: unknown): void;
+    (source: string, data: unknown, options?: ILoggerLogCallableOptions): void;
 }
 
 export enum LogType {
@@ -126,7 +129,7 @@ export interface ILogger {
     flush(): Promise<ILoggerLog[]>;
 }
 
-export interface Context extends DbContext, TenancyContext, I18NContext {
+export interface Context extends TenancyContext, I18NContext {
     logger: ILoggerCrud & {
         log: ILogger;
     };

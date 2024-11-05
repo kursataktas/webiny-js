@@ -34,9 +34,16 @@ describe("createLogger", () => {
         };
         expect(context.logger).toBeUndefined();
 
-        const plugin = createLogger();
+        const plugins = createLogger();
 
-        await plugin.apply(context as Context);
+        for (const plugin of plugins) {
+            // @ts-expect-error
+            if (!plugin.apply) {
+                continue;
+            }
+            // @ts-expect-error
+            await plugin.apply(context);
+        }
 
         expect(context.logger).toBeDefined();
     });

@@ -5,7 +5,7 @@ import { DynamoDbLoggerKeys, DynamoDbStorageOperations } from "~/logger";
 import { create } from "~/db";
 import { Context, ILoggerStorageOperations, LogType } from "~/types";
 import { Entity } from "@webiny/db-dynamodb/toolbox";
-import { createCrud } from "~/crud";
+import { createCrud as baseCreateCrud } from "~/crud";
 import { NotFoundError } from "@webiny/handler-graphql";
 import { loggerFactory } from "~/logger/factory";
 
@@ -14,6 +14,17 @@ describe("crud", () => {
 
     let entity: Entity;
     let storageOperations: ILoggerStorageOperations;
+
+    const checkPermission = async (): Promise<void> => {
+        return;
+    };
+
+    const createCrud = () => {
+        return baseCreateCrud({
+            storageOperations,
+            checkPermission
+        });
+    };
 
     beforeEach(() => {
         const result = create({
@@ -27,9 +38,7 @@ describe("crud", () => {
     });
 
     it("should create crud methods", async () => {
-        const crud = createCrud({
-            storageOperations
-        });
+        const crud = createCrud();
 
         expect(crud).toHaveProperty("getLog");
         expect(crud).toHaveProperty("deleteLog");
@@ -39,9 +48,7 @@ describe("crud", () => {
     });
 
     it("should run getLog method", async () => {
-        const crud = createCrud({
-            storageOperations
-        });
+        const crud = createCrud();
 
         try {
             const result = await crud.getLog({
@@ -56,9 +63,7 @@ describe("crud", () => {
     });
 
     it("should run deleteLog method", async () => {
-        const crud = createCrud({
-            storageOperations
-        });
+        const crud = createCrud();
 
         try {
             const result = await crud.deleteLog({
@@ -73,9 +78,7 @@ describe("crud", () => {
     });
 
     it("should run deleteLogs method", async () => {
-        const crud = createCrud({
-            storageOperations
-        });
+        const crud = createCrud();
 
         const result = await crud.deleteLogs({
             where: {
@@ -86,9 +89,7 @@ describe("crud", () => {
     });
 
     it("should run listLogs method", async () => {
-        const crud = createCrud({
-            storageOperations
-        });
+        const crud = createCrud();
 
         const result = await crud.listLogs({});
         expect(result).toEqual({
@@ -102,9 +103,7 @@ describe("crud", () => {
     });
 
     it("should run withSource method", async () => {
-        const crud = createCrud({
-            storageOperations
-        });
+        const crud = createCrud();
 
         const result = crud.withSource("source");
         expect(result).toHaveProperty("info");
@@ -116,7 +115,7 @@ describe("crud", () => {
     });
 
     it("should log via withSource method", async () => {
-        const { logger: masterLogger, storageOperations } = loggerFactory({
+        const { logger: masterLogger } = loggerFactory({
             context: {
                 db: {
                     driver: {
@@ -131,9 +130,7 @@ describe("crud", () => {
 
         const context: Context["logger"] = {
             log: masterLogger,
-            ...createCrud({
-                storageOperations
-            })
+            ...createCrud()
         };
 
         const logger = context.withSource("source");

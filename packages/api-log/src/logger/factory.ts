@@ -1,18 +1,17 @@
 import { createDynamoDbLogger, createStorageOperations, DynamoDbLoggerKeys } from "./dynamodb";
 import { create } from "~/db";
-import { Context } from "~/types";
+import { DynamoDBDocument } from "@webiny/aws-sdk/client-dynamodb";
 
 export interface ILoggerFactoryParams {
-    context: Pick<Context, "db">;
+    documentClient: DynamoDBDocument;
     getTenant: () => string;
     getLocale: () => string;
 }
 
-export const loggerFactory = ({ getTenant, getLocale, context }: ILoggerFactoryParams) => {
+export const loggerFactory = ({ getTenant, getLocale, documentClient }: ILoggerFactoryParams) => {
     const keys = new DynamoDbLoggerKeys();
     const { entity } = create({
-        // @ts-expect-error
-        documentClient: context.db.driver.documentClient
+        documentClient
     });
 
     const storageOperations = createStorageOperations({

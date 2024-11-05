@@ -16,12 +16,15 @@ import { NotFoundError } from "@webiny/handler-graphql";
 
 export interface ICreateCrudParams {
     storageOperations: ILoggerStorageOperations;
+    checkPermission(): Promise<void>;
 }
 
 export const createCrud = (params: ICreateCrudParams): ILoggerCrud => {
-    const { storageOperations } = params;
+    const { storageOperations, checkPermission } = params;
+
     return {
         async getLog(params: ILoggerCrudGetLogsParams): Promise<ILoggerCrudGetLogResponse> {
+            await checkPermission();
             const item = await storageOperations.getLog(params);
             if (!item) {
                 throw new NotFoundError();
@@ -31,6 +34,7 @@ export const createCrud = (params: ICreateCrudParams): ILoggerCrud => {
             };
         },
         async deleteLog(params: ILoggerCrudDeleteLogParams): Promise<ILoggerCrudDeleteLogResponse> {
+            await checkPermission();
             const item = await storageOperations.deleteLog({
                 ...params
             });
@@ -42,9 +46,11 @@ export const createCrud = (params: ICreateCrudParams): ILoggerCrud => {
             };
         },
         async deleteLogs(params: ILoggerCrudDeleteLogsParams): Promise<ILoggerLog[]> {
+            await checkPermission();
             return storageOperations.deleteLogs(params);
         },
         async listLogs(params: ILoggerCrudListLogsParams): Promise<ILoggerCrudListLogsResponse> {
+            await checkPermission();
             const { items, meta } = await storageOperations.listLogs(params);
             return {
                 items,
