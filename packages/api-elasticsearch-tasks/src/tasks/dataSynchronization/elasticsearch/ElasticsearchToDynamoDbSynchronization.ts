@@ -1,6 +1,7 @@
 import {
     IDataSynchronizationInput,
     IDataSynchronizationManager,
+    IDataSynchronizationOutputKey,
     IElasticsearchSyncParams,
     ISynchronization,
     ISynchronizationRunResult
@@ -35,7 +36,7 @@ export class ElasticsearchToDynamoDbSynchronization implements ISynchronization 
 
         let currentIndex = indexes[next];
 
-        const keys: string[] = [];
+        const keys: IDataSynchronizationOutputKey[] = [];
 
         while (currentIndex) {
             if (this.manager.isAborted()) {
@@ -77,7 +78,7 @@ export class ElasticsearchToDynamoDbSynchronization implements ISynchronization 
                 items: result.items,
                 skipDryRun: input.skipDryRun
             });
-            keys.push(...syncResult.keys);
+            keys.push(...(syncResult.keys || []));
 
             if (!syncResult.done && result.cursor) {
                 cursor = result.cursor;

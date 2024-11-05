@@ -11,7 +11,8 @@ import { Context } from "~/types";
 import {
     IElasticsearchSynchronize,
     IElasticsearchSynchronizeExecuteParams,
-    IElasticsearchSynchronizeExecuteResponse
+    IElasticsearchSynchronizeExecuteResponse,
+    IElasticsearchSynchronizeExecuteResponseKey
 } from "./abstractions/ElasticsearchSynchronize";
 
 export interface IElasticsearchSynchronizeParams {
@@ -66,7 +67,7 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
             timer: this.timer,
             context: this.context
         });
-        const keys: string[] = [];
+        const keys: IElasticsearchSynchronizeExecuteResponseKey[] = [];
         /**
          * We need to find the items we have in the Elasticsearch but not in the DynamoDB-Elasticsearch table.
          */
@@ -77,7 +78,10 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
             if (exists) {
                 continue;
             }
-            keys.push(item._id);
+            keys.push({
+                index,
+                id: item._id
+            });
             elasticsearchSyncBuilder.delete({
                 index,
                 id: item._id
@@ -98,7 +102,7 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
 
         return {
             done,
-            keys
+            keys: undefined
         };
     }
 

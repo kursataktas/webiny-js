@@ -27,8 +27,13 @@ export interface IDataSynchronizationInput {
     elasticsearchToDynamoDb?: IDataSynchronizationInputElasticsearchToDynamoDbValue;
 }
 
+export interface IDataSynchronizationOutputKey {
+    index: string;
+    id: string;
+}
+
 export interface IDataSynchronizationOutput extends ITaskResponseDoneResultOutput {
-    keys?: string[];
+    keys?: IDataSynchronizationOutputKey[];
 }
 
 export type ISynchronizationRunResult =

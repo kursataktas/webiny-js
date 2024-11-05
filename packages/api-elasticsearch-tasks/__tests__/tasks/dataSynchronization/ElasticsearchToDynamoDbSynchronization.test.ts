@@ -9,6 +9,7 @@ import { ITimer } from "@webiny/handler-aws";
 import { IIndexManager } from "~/settings/types";
 import { createRunner } from "@webiny/project-utils/testing/tasks";
 import { TaskResponseStatus } from "@webiny/tasks";
+import { IElasticsearchSynchronizeExecuteResponseKey } from "~/tasks/dataSynchronization/elasticsearch/abstractions/ElasticsearchSynchronize";
 
 const queryAllRecords = (index: string) => {
     return {
@@ -29,6 +30,18 @@ interface ICreateSyncBuilderParams {
     context: Pick<Context, "elasticsearch">;
     index: string;
 }
+
+const createKeys = (amount: number): IElasticsearchSynchronizeExecuteResponseKey[] => {
+    return Array.from({ length: amount })
+        .fill(undefined)
+        .map((_, current) => {
+            return {
+                index: expect.any(String),
+                id: `pkValue${current}:skValue${current}`
+            };
+        })
+        .sort((a, b) => a.id.localeCompare(b.id));
+};
 
 const createRecordsFactory = (params: ICreateSyncBuilderParams) => {
     const { timer, context, index, records } = params;
@@ -153,109 +166,8 @@ describe("ElasticsearchToDynamoDbSynchronization", () => {
             locale: "en-US",
             message: "Dry run.",
             output: {
-                keys: [
-                    "pkValue0:skValue0",
-                    "pkValue1:skValue1",
-                    "pkValue10:skValue10",
-                    "pkValue100:skValue100",
-                    "pkValue11:skValue11",
-                    "pkValue12:skValue12",
-                    "pkValue13:skValue13",
-                    "pkValue14:skValue14",
-                    "pkValue15:skValue15",
-                    "pkValue16:skValue16",
-                    "pkValue17:skValue17",
-                    "pkValue18:skValue18",
-                    "pkValue19:skValue19",
-                    "pkValue2:skValue2",
-                    "pkValue20:skValue20",
-                    "pkValue21:skValue21",
-                    "pkValue22:skValue22",
-                    "pkValue23:skValue23",
-                    "pkValue24:skValue24",
-                    "pkValue25:skValue25",
-                    "pkValue26:skValue26",
-                    "pkValue27:skValue27",
-                    "pkValue28:skValue28",
-                    "pkValue29:skValue29",
-                    "pkValue3:skValue3",
-                    "pkValue30:skValue30",
-                    "pkValue31:skValue31",
-                    "pkValue32:skValue32",
-                    "pkValue33:skValue33",
-                    "pkValue34:skValue34",
-                    "pkValue35:skValue35",
-                    "pkValue36:skValue36",
-                    "pkValue37:skValue37",
-                    "pkValue38:skValue38",
-                    "pkValue39:skValue39",
-                    "pkValue4:skValue4",
-                    "pkValue40:skValue40",
-                    "pkValue41:skValue41",
-                    "pkValue42:skValue42",
-                    "pkValue43:skValue43",
-                    "pkValue44:skValue44",
-                    "pkValue45:skValue45",
-                    "pkValue46:skValue46",
-                    "pkValue47:skValue47",
-                    "pkValue48:skValue48",
-                    "pkValue49:skValue49",
-                    "pkValue5:skValue5",
-                    "pkValue50:skValue50",
-                    "pkValue51:skValue51",
-                    "pkValue52:skValue52",
-                    "pkValue53:skValue53",
-                    "pkValue54:skValue54",
-                    "pkValue55:skValue55",
-                    "pkValue56:skValue56",
-                    "pkValue57:skValue57",
-                    "pkValue58:skValue58",
-                    "pkValue59:skValue59",
-                    "pkValue6:skValue6",
-                    "pkValue60:skValue60",
-                    "pkValue61:skValue61",
-                    "pkValue62:skValue62",
-                    "pkValue63:skValue63",
-                    "pkValue64:skValue64",
-                    "pkValue65:skValue65",
-                    "pkValue66:skValue66",
-                    "pkValue67:skValue67",
-                    "pkValue68:skValue68",
-                    "pkValue69:skValue69",
-                    "pkValue7:skValue7",
-                    "pkValue70:skValue70",
-                    "pkValue71:skValue71",
-                    "pkValue72:skValue72",
-                    "pkValue73:skValue73",
-                    "pkValue74:skValue74",
-                    "pkValue75:skValue75",
-                    "pkValue76:skValue76",
-                    "pkValue77:skValue77",
-                    "pkValue78:skValue78",
-                    "pkValue79:skValue79",
-                    "pkValue8:skValue8",
-                    "pkValue80:skValue80",
-                    "pkValue81:skValue81",
-                    "pkValue82:skValue82",
-                    "pkValue83:skValue83",
-                    "pkValue84:skValue84",
-                    "pkValue85:skValue85",
-                    "pkValue86:skValue86",
-                    "pkValue87:skValue87",
-                    "pkValue88:skValue88",
-                    "pkValue89:skValue89",
-                    "pkValue9:skValue9",
-                    "pkValue90:skValue90",
-                    "pkValue91:skValue91",
-                    "pkValue92:skValue92",
-                    "pkValue93:skValue93",
-                    "pkValue94:skValue94",
-                    "pkValue95:skValue95",
-                    "pkValue96:skValue96",
-                    "pkValue97:skValue97",
-                    "pkValue98:skValue98",
-                    "pkValue99:skValue99"
-                ]
+                // @ts-expect-error
+                keys: createKeys(result.output.keys.length)
             },
             status: TaskResponseStatus.DONE,
             tenant: "root",

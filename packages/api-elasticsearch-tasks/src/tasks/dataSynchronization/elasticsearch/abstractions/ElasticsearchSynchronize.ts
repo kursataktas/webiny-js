@@ -12,9 +12,14 @@ export interface IElasticsearchSynchronizeExecuteParams {
     skipDryRun: boolean;
 }
 
+export interface IElasticsearchSynchronizeExecuteResponseKey {
+    index: string;
+    id: string;
+}
+
 export interface IElasticsearchSynchronizeExecuteResponse {
     done: boolean;
-    keys: string[];
+    keys: IElasticsearchSynchronizeExecuteResponseKey[] | undefined;
 }
 export interface IElasticsearchSynchronize {
     execute(
