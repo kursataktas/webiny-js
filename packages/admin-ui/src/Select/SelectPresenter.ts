@@ -34,7 +34,7 @@ class SelectPresenter implements ISelectPresenter {
                 ...omit(this.props, ["placeholder", "options"])
             },
             selectTriggerVm: {
-                placeholder: this.props?.placeholder || "Choose a value",
+                placeholder: this.props?.placeholder || "Select an option",
                 size: this.props?.size,
                 variant: this.props?.variant
             },

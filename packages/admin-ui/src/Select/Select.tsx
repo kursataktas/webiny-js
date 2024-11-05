@@ -239,7 +239,7 @@ interface SelectOptionsVm {
 
 const DecoratableSelectOptions = (props: SelectOptionsVm) => {
     const renderOptions = React.useCallback((items: SelectOptionFormatted[]) => {
-        return items.flatMap((item, index) => {
+        return items.map((item, index) => {
             const elements = [];
 
             if (item.options.length > 0) {

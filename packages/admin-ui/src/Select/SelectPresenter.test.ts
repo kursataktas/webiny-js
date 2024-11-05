@@ -63,7 +63,7 @@ describe("SelectPresenter", () => {
             // default: no props
             const presenter = new SelectPresenter();
             presenter.init({ onValueChange });
-            expect(presenter.vm.selectTriggerVm.placeholder).toEqual("Choose a value");
+            expect(presenter.vm.selectTriggerVm.placeholder).toEqual("Select an option");
             expect(presenter.vm.selectTriggerVm.size).toEqual(undefined);
             expect(presenter.vm.selectTriggerVm.variant).toEqual(undefined);
         }

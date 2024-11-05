@@ -1,11 +1,11 @@
 import { SelectOptionDto } from "./SelectOptionDto";
 
 export class SelectOption {
-    private _label: string;
-    private _value: string | null;
-    private _options: SelectOption[];
-    private _disabled: boolean;
-    private _separator: boolean;
+    private readonly _label: string;
+    private readonly _value: string | null;
+    private readonly _options: SelectOption[];
+    private readonly _disabled: boolean;
+    private readonly _separator: boolean;
 
     protected constructor(data: {
         label: string;
