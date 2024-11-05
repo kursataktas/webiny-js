@@ -82,18 +82,21 @@ export const ExtraLargeSize: Story = {
 
 export const WithCustomPlaceholder: Story = {
     args: {
+        ...Default.args,
         placeholder: "Custom placeholder"
     }
 };
 
 export const Disabled: Story = {
     args: {
+        ...Default.args,
         disabled: true
     }
 };
 
 export const WithFormattedOptions: Story = {
     args: {
+        ...Default.args,
         options: [
             { label: "Eastern Standard Time (EST)", value: "est" },
             { label: "Central Standard Time (CST)", value: "cst" },
@@ -116,6 +119,7 @@ export const WithFormattedOptions: Story = {
 
 export const WithOptionGroups: Story = {
     args: {
+        ...Default.args,
         options: [
             {
                 label: "North America",
@@ -163,6 +167,7 @@ export const WithOptionGroups: Story = {
 
 export const WithSeparators: Story = {
     args: {
+        ...Default.args,
         options: [
             { label: "Eastern Standard Time (EST)", value: "est" },
             { label: "Central Standard Time (CST)", value: "cst" },
@@ -207,6 +212,7 @@ export const WithDisabledOptions: Story = {
 
 export const WithExternalValueControl: Story = {
     args: {
+        ...Default.args,
         options: [
             "Eastern Standard Time (EST)",
             "Central Standard Time (CST)",
