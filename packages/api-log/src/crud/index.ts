@@ -59,20 +59,20 @@ export const createCrud = (params: ICreateCrudParams): ILoggerCrud => {
         },
         withSource(this: Context["logger"], source: string): ILoggerWithSource {
             return {
-                info: data => {
-                    return this.log.info(source, data);
+                info: (data, options) => {
+                    return this.log.info(source, data, options);
                 },
-                notice: data => {
-                    return this.log.notice(source, data);
+                notice: (data, options) => {
+                    return this.log.notice(source, data, options);
                 },
-                debug: data => {
-                    return this.log.debug(source, data);
+                debug: (data, options) => {
+                    return this.log.debug(source, data, options);
                 },
-                warn: data => {
-                    return this.log.warn(source, data);
+                warn: (data, options) => {
+                    return this.log.warn(source, data, options);
                 },
-                error: data => {
-                    return this.log.error(source, data);
+                error: (data, options) => {
+                    return this.log.error(source, data, options);
                 },
                 flush: () => {
                     return this.log.flush();

@@ -84,12 +84,7 @@ export const execute = (params: IExecuteParams) => {
             maxWaitingTime
         });
 
-        const logError = (error: Error) => {
-            context.logger.log.error("dynamodbToElasticsearch", error, {
-                tenant: "root",
-                locale: "unknown"
-            });
-        };
+        const log = context.logger.withSource("dynamodbToElasticsearch");
 
         try {
             await healthCheck.wait({
@@ -127,7 +122,10 @@ export const execute = (params: IExecuteParams) => {
             });
             checkErrors(res);
         } catch (error) {
-            logError(error);
+            log.error(error, {
+                tenant: "root",
+                locale: "unknown"
+            });
 
             if (process.env.DEBUG !== "true") {
                 throw error;

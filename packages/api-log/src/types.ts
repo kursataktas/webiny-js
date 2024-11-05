@@ -1,6 +1,5 @@
 import { TenancyContext } from "@webiny/api-tenancy/types";
 import { I18NContext } from "@webiny/api-i18n/types";
-import { GenericRecord } from "@webiny/api/types";
 
 export interface ILoggerLogCallableOptions {
     tenant?: string;
@@ -88,7 +87,7 @@ export interface ILoggerCrudDeleteLogsParams {
 }
 
 export interface ILoggerWithSourceLogCallable {
-    (data: GenericRecord): void;
+    (data: unknown, options?: ILoggerLogCallableOptions): void;
 }
 
 export interface ILoggerWithSource {
