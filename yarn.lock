@@ -17645,7 +17645,7 @@ __metadata:
     mobx: ^6.9.0
     postcss-loader: ^6.2.1
     prettier: ^2.8.3
-    react: 18.3.1
+    react: 18.2.0
     rimraf: ^5.0.5
     sass: 1.44.0
     storybook: 7.6.20
