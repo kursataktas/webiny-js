@@ -98,7 +98,7 @@ interface SliderRendererProps {
     onValueCommit: (values: number[]) => void;
 }
 
-const DecoratorableSliderRenderer = ({
+const DecoratableSliderRenderer = ({
     sliderVm,
     thumbVm,
     onValueChange,
@@ -112,7 +112,7 @@ const DecoratorableSliderRenderer = ({
     );
 };
 
-const SliderRenderer = makeDecoratable("SliderRenderer", DecoratorableSliderRenderer);
+const SliderRenderer = makeDecoratable("SliderRenderer", DecoratableSliderRenderer);
 
 /**
  * Slider

@@ -19,21 +19,21 @@ interface SliderValueProps extends React.HTMLAttributes<HTMLSpanElement> {
     value?: SliderLabelVm["value"];
 }
 
-const DecoratorableSliderValue = (props: SliderValueProps) => {
+const DecoratableSliderValue = (props: SliderValueProps) => {
     if (!props.value) {
         return null;
     }
     return <span className={"font-normal text-sm leading-none"}>{props.value}</span>;
 };
 
-const SliderValue = makeDecoratable("SliderValue", DecoratorableSliderValue);
+const SliderValue = makeDecoratable("SliderValue", DecoratableSliderValue);
 
 interface SliderProps extends BaseSliderProps {
     label: SliderLabelVm["label"];
     labelPosition?: LabelPosition;
 }
 
-interface DecoratorableSliderProps {
+interface DecoratableSliderProps {
     sliderVm: SliderVm;
     thumbVm: SliderThumbVm;
     labelVm: SliderLabelVm;
@@ -44,13 +44,13 @@ interface DecoratorableSliderProps {
 /**
  * Slider with top label
  */
-const DecoratorableSliderWithTopValue = ({
+const DecoratableSliderWithTopValue = ({
     sliderVm,
     thumbVm,
     labelVm,
     onValueChange,
     onValueCommit
-}: DecoratorableSliderProps) => {
+}: DecoratableSliderProps) => {
     return (
         <div className={"w-full"}>
             <div className={"flex pr-1 py-1 mb-2"}>
@@ -67,18 +67,18 @@ const DecoratorableSliderWithTopValue = ({
         </div>
     );
 };
-const SliderWithTopValue = makeDecoratable("SliderWithTopValue", DecoratorableSliderWithTopValue);
+const SliderWithTopValue = makeDecoratable("SliderWithTopValue", DecoratableSliderWithTopValue);
 
 /**
  * Slider with side label
  */
-const DecoratorableSliderWithSideValue = ({
+const DecoratableSliderWithSideValue = ({
     sliderVm,
     thumbVm,
     labelVm,
     onValueChange,
     onValueCommit
-}: DecoratorableSliderProps) => {
+}: DecoratableSliderProps) => {
     return (
         <div className={"w-full flex flex-row items-center justify-between"}>
             <div className={"basis-2/12 pr-2"}>
@@ -100,10 +100,7 @@ const DecoratorableSliderWithSideValue = ({
         </div>
     );
 };
-const SliderWithSideValue = makeDecoratable(
-    "SliderWithSideValue",
-    DecoratorableSliderWithSideValue
-);
+const SliderWithSideValue = makeDecoratable("SliderWithSideValue", DecoratableSliderWithSideValue);
 
 /**
  * Slider

@@ -27,7 +27,7 @@ interface RangeSliderRendererProps {
     onValuesCommit: (values: number[]) => void;
 }
 
-const DecoratorableRangeSliderRenderer = ({
+const DecoratableRangeSliderRenderer = ({
     sliderVm,
     thumbsVm,
     onValuesChange,
@@ -47,10 +47,7 @@ const DecoratorableRangeSliderRenderer = ({
     );
 };
 
-const RangeSliderRenderer = makeDecoratable(
-    "RangeSliderRenderer",
-    DecoratorableRangeSliderRenderer
-);
+const RangeSliderRenderer = makeDecoratable("RangeSliderRenderer", DecoratableRangeSliderRenderer);
 
 /**
  * RangeSlider
