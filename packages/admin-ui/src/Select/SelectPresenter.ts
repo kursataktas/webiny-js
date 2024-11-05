@@ -4,13 +4,13 @@ import { SelectOptionsVm, SelectProps, SelectTriggerVm, SelectVm } from "./Selec
 import { SelectOption } from "./SelectOption";
 import { SelectOptionMapper } from "~/Select/SelectOptionMapper";
 
-interface ISelectPresenter {
+interface ISelectPresenter<TProps extends SelectProps = SelectProps> {
     vm: {
         selectVm: SelectVm;
         selectTriggerVm: SelectTriggerVm;
         selectOptionsVm: SelectOptionsVm;
     };
-    init: (props: SelectProps) => void;
+    init: (props: TProps) => void;
     changeValue: (value: string) => void;
 }
 

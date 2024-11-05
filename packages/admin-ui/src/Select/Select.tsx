@@ -336,8 +336,8 @@ const Select = makeDecoratable("Select", DecoratableSelect);
 export {
     Select,
     SelectRenderer,
+    type SelectOptionsVm,
     type SelectProps,
-    type SelectVm,
     type SelectTriggerVm,
-    type SelectOptionsVm
+    type SelectVm
 };
