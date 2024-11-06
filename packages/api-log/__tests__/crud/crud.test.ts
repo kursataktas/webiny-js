@@ -116,14 +116,7 @@ describe("crud", () => {
 
     it("should log via withSource method", async () => {
         const { logger: masterLogger } = loggerFactory({
-            context: {
-                db: {
-                    driver: {
-                        // @ts-expect-error
-                        documentClient
-                    }
-                }
-            },
+            documentClient,
             getLocale,
             getTenant
         });

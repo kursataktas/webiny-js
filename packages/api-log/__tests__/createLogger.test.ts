@@ -8,7 +8,7 @@ import { PluginsContainer } from "@webiny/plugins";
 describe("createLogger", () => {
     const documentClient = getDocumentClient();
 
-    it("should create logger context", async () => {
+    it("should create logger context with db driver", async () => {
         const context: Context = {
             plugins: new PluginsContainer(),
             db: {
@@ -35,6 +35,35 @@ describe("createLogger", () => {
         expect(context.logger).toBeUndefined();
 
         const plugins = createLogger();
+
+        for (const plugin of plugins) {
+            // @ts-expect-error
+            if (!plugin.apply) {
+                continue;
+            }
+            // @ts-expect-error
+            await plugin.apply(context);
+        }
+
+        expect(context.logger).toBeDefined();
+    });
+
+    it("should create logger context with direct params", async () => {
+        // @ts-expect-error
+        const context: Context = {
+            plugins: new PluginsContainer()
+        };
+        expect(context.logger).toBeUndefined();
+
+        const plugins = createLogger({
+            documentClient,
+            getTenant: () => {
+                return "root";
+            },
+            getLocale: () => {
+                return "en-US";
+            }
+        });
 
         for (const plugin of plugins) {
             // @ts-expect-error
