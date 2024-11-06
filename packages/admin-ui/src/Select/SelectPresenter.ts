@@ -53,17 +53,12 @@ class SelectPresenter implements ISelectPresenter {
             return [];
         }
 
-        const result = [];
-
-        for (const option of options) {
+        return options.map(option => {
             if (typeof option === "string") {
-                result.push(SelectOption.createFromString(option));
-                continue;
+                return SelectOption.createFromString(option);
             }
-            result.push(SelectOption.create(option));
-        }
-
-        return result;
+            return SelectOption.create(option);
+        });
     }
 }
 
