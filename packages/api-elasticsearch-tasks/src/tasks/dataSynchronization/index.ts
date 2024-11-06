@@ -54,8 +54,7 @@ export const createDataSynchronization = (params?: IElasticsearchTaskConfig) => 
                     factories: createFactories()
                 });
                 return await dataSynchronization.run({
-                    ...input,
-                    skipDryRun: !!input.skipDryRun
+                    ...input
                 });
             } catch (ex) {
                 return response.error(ex);
@@ -64,7 +63,6 @@ export const createDataSynchronization = (params?: IElasticsearchTaskConfig) => 
         createInputValidation({ validator }) {
             return {
                 flow: validator.enum(["elasticsearchToDynamoDb"]),
-                skipDryRun: validator.boolean().optional().default(false),
                 elasticsearchToDynamoDb: validator
                     .object({
                         finished: validator.boolean().optional().default(false),

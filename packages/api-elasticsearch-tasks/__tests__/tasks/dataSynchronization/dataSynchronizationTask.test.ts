@@ -56,8 +56,7 @@ describe("data synchronization - elasticsearch", () => {
                 definitionId: DATA_SYNCHRONIZATION_TASK,
                 input: {
                     // @ts-expect-error
-                    flow: "unknownFlow",
-                    skipDryRun: true
+                    flow: "unknownFlow"
                 },
                 name: "Data Sync Mock Task"
             });
@@ -88,8 +87,7 @@ describe("data synchronization - elasticsearch", () => {
         const task = await context.tasks.createTask<IDataSynchronizationInput>({
             definitionId: DATA_SYNCHRONIZATION_TASK,
             input: {
-                flow: "elasticsearchToDynamoDb",
-                skipDryRun: true
+                flow: "elasticsearchToDynamoDb"
             },
             name: "Data Sync Mock Task"
         });

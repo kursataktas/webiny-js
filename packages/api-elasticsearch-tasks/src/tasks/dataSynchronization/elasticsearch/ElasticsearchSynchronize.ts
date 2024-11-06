@@ -11,8 +11,7 @@ import { Context } from "~/types";
 import {
     IElasticsearchSynchronize,
     IElasticsearchSynchronizeExecuteParams,
-    IElasticsearchSynchronizeExecuteResponse,
-    IElasticsearchSynchronizeExecuteResponseKey
+    IElasticsearchSynchronizeExecuteResponse
 } from "./abstractions/ElasticsearchSynchronize";
 
 export interface IElasticsearchSynchronizeParams {
@@ -37,11 +36,10 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
     public async execute(
         params: IElasticsearchSynchronizeExecuteParams
     ): Promise<IElasticsearchSynchronizeExecuteResponse> {
-        const { items, done, index, skipDryRun } = params;
+        const { items, done, index } = params;
         if (items.length === 0) {
             return {
-                done: true,
-                keys: []
+                done: true
             };
         }
 
@@ -67,7 +65,6 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
             timer: this.timer,
             context: this.context
         });
-        const keys: IElasticsearchSynchronizeExecuteResponseKey[] = [];
         /**
          * We need to find the items we have in the Elasticsearch but not in the DynamoDB-Elasticsearch table.
          */
@@ -78,31 +75,17 @@ export class ElasticsearchSynchronize implements IElasticsearchSynchronize {
             if (exists) {
                 continue;
             }
-            keys.push({
-                index,
-                id: item._id
-            });
             elasticsearchSyncBuilder.delete({
                 index,
                 id: item._id
             });
-        }
-        /**
-         * If there is dry run, just return the done flag + items which are going to get deleted.
-         */
-        if (skipDryRun === false) {
-            return {
-                done,
-                keys
-            };
         }
 
         const executeWithRetry = elasticsearchSyncBuilder.build();
         await executeWithRetry();
 
         return {
-            done,
-            keys: undefined
+            done
         };
     }
 

@@ -23,18 +23,10 @@ export interface IDataSynchronizationInputElasticsearchToDynamoDbValue
 
 export interface IDataSynchronizationInput {
     flow: "elasticsearchToDynamoDb";
-    skipDryRun: boolean;
     elasticsearchToDynamoDb?: IDataSynchronizationInputElasticsearchToDynamoDbValue;
 }
 
-export interface IDataSynchronizationOutputKey {
-    index: string;
-    id: string;
-}
-
-export interface IDataSynchronizationOutput extends ITaskResponseDoneResultOutput {
-    keys?: IDataSynchronizationOutputKey[];
-}
+export type IDataSynchronizationOutput = ITaskResponseDoneResultOutput;
 
 export type ISynchronizationRunResult =
     | ITaskResponseContinueResult<IDataSynchronizationInput>
