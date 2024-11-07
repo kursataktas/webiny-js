@@ -36,4 +36,4 @@ export interface IDecompressor {
     decompress(data: GenericRecord): Promise<GenericRecord | null>;
 }
 
-export interface Context extends ElasticsearchContext, Pick<LoggerContext, "logger"> {}
+export interface Context extends ElasticsearchContext, Partial<Pick<LoggerContext, "logger">> {}
