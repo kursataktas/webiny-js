@@ -75,10 +75,10 @@ export const Default: Story = {
     }
 };
 
-export const Accent: Story = {
+export const SubtleVariant: Story = {
     args: {
         ...Default.args,
-        variant: "accent"
+        variant: "subtle"
     }
 };
 

@@ -36,12 +36,12 @@ const ToastViewport = makeDecoratable("ToastViewport", ToastViewportBase);
  * Toast Root
  */
 const toastVariants = cva(
-    "group pointer-events-auto relative flex w-full items-start justify-start p-4 gap-3 self-stretch overflow-hidden rounded-md border shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full",
+    "group pointer-events-auto relative flex w-full items-start justify-start p-md gap-sm-extra self-stretch overflow-hidden rounded-md border-sm border-neutral-dimmed shadow-lg transition-all data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full",
     {
         variants: {
             variant: {
-                default: "border bg-background text-foreground",
-                accent: "accent group bg-foreground text-background"
+                default: "bg-neutral-dark text-neutral-light fill-neutral-base",
+                subtle: "bg-white fill-neutral-xstrong"
             }
         },
         defaultVariants: {
@@ -94,10 +94,7 @@ const ToastCloseBase = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <ToastPrimitives.Close
         ref={ref}
-        className={cn(
-            "rounded-md p-1 text-foreground/50 focus:outline-none focus:ring-2 group-hover:opacity-100 group-[.accent]:text-background group-[.accent]:fill-background",
-            className
-        )}
+        className={cn("p-xs focus:outline-none", className)}
         aria-label="Close"
         {...props}
     >
@@ -118,7 +115,11 @@ type ToastIconProps = {
 };
 
 const ToastIconBase = ({ icon = <NotificationsIcon /> }: ToastIconProps) => (
-    <div className={"fill-primary"}>{icon}</div>
+    <div className={"fill-accent-default"}>
+        <span className="h-4 w-4" aria-hidden>
+            {icon}
+        </span>
+    </div>
 );
 
 const ToastIcon = makeDecoratable("ToastIcon", ToastIconBase);
@@ -154,7 +155,7 @@ const ToastDescriptionBase = React.forwardRef<
     ToastDescriptionProps
 >(({ text, ...props }, ref) => (
     <ToastPrimitives.Description ref={ref} asChild {...props}>
-        <Text text={text} as={"div"} />
+        <Text text={text} as={"div"} size={"sm"} className={"text-neutral-dimmed"} />
     </ToastPrimitives.Description>
 ));
 ToastDescriptionBase.displayName = ToastPrimitives.Description.displayName;
