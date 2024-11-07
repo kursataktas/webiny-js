@@ -13080,6 +13080,7 @@ __metadata:
   resolution: "@webiny/api-prerendering-service-aws@workspace:packages/api-prerendering-service-aws"
   dependencies:
     "@webiny/api": 0.0.0
+    "@webiny/api-log": 0.0.0
     "@webiny/api-prerendering-service": 0.0.0
     "@webiny/aws-sdk": 0.0.0
     "@webiny/cli": 0.0.0
@@ -13122,6 +13123,7 @@ __metadata:
     "@types/object-hash": ^2.2.1
     "@types/puppeteer-core": ^5.4.0
     "@webiny/api": 0.0.0
+    "@webiny/api-log": 0.0.0
     "@webiny/aws-sdk": 0.0.0
     "@webiny/cli": 0.0.0
     "@webiny/error": 0.0.0
@@ -13320,6 +13322,7 @@ __metadata:
     "@webiny/api-headless-cms-tasks": 0.0.0
     "@webiny/api-i18n": 0.0.0
     "@webiny/api-i18n-content": 0.0.0
+    "@webiny/api-log": 0.0.0
     "@webiny/api-page-builder": 0.0.0
     "@webiny/api-page-builder-aco": 0.0.0
     "@webiny/api-page-builder-import-export": 0.0.0
