@@ -169,6 +169,7 @@ interface InputProps
         VariantProps<typeof inputVariants> {
     leadingIcon?: React.ReactElement<typeof BaseIcon>;
     trailingIcon?: React.ReactElement<typeof BaseIcon>;
+    maxLength?: React.InputHTMLAttributes<HTMLInputElement>["size"];
 }
 
 const getIconPosition = (
@@ -189,7 +190,17 @@ const getIconPosition = (
 
 const DecoratableInput = React.forwardRef<HTMLInputElement, InputProps>(
     (
-        { className, type, variant, size, leadingIcon, trailingIcon, disabled, invalid, ...props },
+        {
+            className,
+            disabled,
+            invalid,
+            leadingIcon,
+            maxLength,
+            size,
+            trailingIcon,
+            variant,
+            ...props
+        },
         ref
     ) => {
         const iconPosition = getIconPosition(leadingIcon, trailingIcon);
@@ -205,12 +216,12 @@ const DecoratableInput = React.forwardRef<HTMLInputElement, InputProps>(
                     />
                 )}
                 <input
-                    type={type}
                     className={cn(
                         inputVariants({ variant, size, className, iconPosition, invalid })
                     )}
                     ref={ref}
                     disabled={disabled}
+                    size={maxLength}
                     {...props}
                 />
                 {trailingIcon && (
