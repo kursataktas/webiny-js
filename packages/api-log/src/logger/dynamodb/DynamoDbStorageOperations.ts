@@ -21,6 +21,7 @@ import {
 } from "@webiny/db-dynamodb";
 import { GenericRecord } from "@webiny/api/types";
 import { compress, decompress } from "@webiny/utils/compression/gzip";
+import { convertAfterToStartKey, convertLastEvaluatedKeyToAfterKey } from "./convertKeys";
 
 const TO_STORAGE_ENCODING = "base64";
 const FROM_STORAGE_ENCODING = "utf8";
@@ -110,7 +111,7 @@ export class DynamoDbStorageOperations implements ILoggerStorageOperations {
             }
         });
 
-        const cursor = this.convertLastEvaluatedKeyToAfterKey(result.lastEvaluatedKey);
+        const cursor = convertLastEvaluatedKeyToAfterKey(result.lastEvaluatedKey);
 
         return {
             items: await Promise.all(
@@ -209,38 +210,6 @@ export class DynamoDbStorageOperations implements ILoggerStorageOperations {
         }
     }
 
-    private convertLastEvaluatedKeyToAfterKey(lastEvaluatedKey?: GenericRecord): string | null {
-        if (!lastEvaluatedKey) {
-            return null;
-        }
-        try {
-            const json = JSON.stringify(lastEvaluatedKey);
-            return Buffer.from(json).toString("base64");
-        } catch (ex) {
-            console.error("Failed to convert last evaluated key to after.");
-            console.log(ex);
-            return null;
-        }
-    }
-
-    private convertAfterToStartKey(after?: string | null): GenericRecord | undefined {
-        if (!after) {
-            return undefined;
-        }
-        try {
-            const json = Buffer.from(after, "base64").toString("utf-8");
-            const result = JSON.parse(json);
-            if (!result || typeof result !== "object") {
-                return undefined;
-            }
-            return result || undefined;
-        } catch (ex) {
-            console.error("Failed to convert after to start key.");
-            console.log(ex);
-            return undefined;
-        }
-    }
-
     private async compress(input: unknown): Promise<string | undefined> {
         if (!input) {
             return undefined;
@@ -269,7 +238,7 @@ export class DynamoDbStorageOperations implements ILoggerStorageOperations {
         const { tenant, source, type, after, sort } = input;
 
         const reverse = sort ? sort.includes("DESC") : false;
-        const startKey = this.convertAfterToStartKey(after);
+        const startKey = convertAfterToStartKey(after);
         /**
          * Tenant related queries.
          */

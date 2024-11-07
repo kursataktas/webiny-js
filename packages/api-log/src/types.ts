@@ -130,8 +130,8 @@ export interface ILogger {
 }
 
 export interface Context
-    extends Partial<Pick<TenancyContext, "tenancy">>,
-        Partial<Pick<I18NContext, "i18n" | "security">>,
+    extends Pick<TenancyContext, "tenancy">,
+        Pick<I18NContext, "i18n" | "security">,
         HandlerContext {
     logger: ILoggerCrud & {
         log: ILogger;
