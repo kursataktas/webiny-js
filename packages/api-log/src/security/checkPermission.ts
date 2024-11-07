@@ -7,7 +7,11 @@ export interface ICheckPermissionFactoryParams {
 
 export const checkPermissionFactory = (params: ICheckPermissionFactoryParams) => {
     return async () => {
-        const permission = await params.getContext().security.getPermission("logs");
+        const context = params.getContext();
+        if (!context.security) {
+            throw new Error("Missing security context.");
+        }
+        const permission = await context.security.getPermission("logs");
         if (permission) {
             return;
         }

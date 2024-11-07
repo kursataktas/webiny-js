@@ -1,5 +1,6 @@
 import { TenancyContext } from "@webiny/api-tenancy/types";
 import { I18NContext } from "@webiny/api-i18n/types";
+import { Context as HandlerContext } from "@webiny/handler/types";
 
 export interface ILoggerLogCallableOptions {
     tenant?: string;
@@ -128,7 +129,10 @@ export interface ILogger {
     flush(): Promise<ILoggerLog[]>;
 }
 
-export interface Context extends TenancyContext, I18NContext {
+export interface Context
+    extends Partial<Pick<TenancyContext, "tenancy">>,
+        Partial<Pick<I18NContext, "i18n" | "security">>,
+        HandlerContext {
     logger: ILoggerCrud & {
         log: ILogger;
     };
