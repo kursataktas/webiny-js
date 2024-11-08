@@ -4,7 +4,9 @@ import {
     NODE_VERSION,
     BUILD_PACKAGES_RUNNER,
     listPackagesWithJestTests,
-    AWS_REGION
+    AWS_REGION,
+    runNodeScript,
+    addToOutputs
 } from "./utils";
 import {
     createGlobalBuildCacheSteps,
@@ -113,9 +115,9 @@ export const pullRequests = createWorkflow({
             outputs: {
                 "global-cache-key": "${{ steps.global-cache-key.outputs.global-cache-key }}",
                 "run-cache-key": "${{ steps.run-cache-key.outputs.run-cache-key }}",
-                "is-fork-pr": "${{ steps.is-fork-pr.outputs.is-fork-pr }}"
+                "is-fork-pr": "${{ steps.is-fork-pr.outputs.is-fork-pr }}",
+                "changed-packages": "${{ steps.detect-changed-packages.outputs.changed-packages }}"
             },
-            checkout: false,
             steps: [
                 {
                     name: "Create global cache key",
@@ -131,6 +133,26 @@ export const pullRequests = createWorkflow({
                     name: "Is a PR from a fork",
                     id: "is-fork-pr",
                     run: 'echo "is-fork-pr=${{ github.event.pull_request.head.repo.fork }}" >> $GITHUB_OUTPUT'
+                },
+                {
+                    name: "Detect changed files",
+                    id: "detect-changed-files",
+                    uses: "dorny/paths-filter@v3",
+                    with: {
+                        filters: "changed:\n  - 'packages/**/*'\n",
+                        "list-files": "json"
+                    }
+                },
+                {
+                    name: "Detect changed packages",
+                    id: "detect-changed-packages",
+                    run: addToOutputs(
+                        "changed-packages",
+                        `$(${runNodeScript(
+                            "listChangedPackages",
+                            "${{ steps.detect-changed-files.outputs.changed_files }}"
+                        )})`
+                    )
                 }
             ]
         }),
@@ -140,6 +162,10 @@ export const pullRequests = createWorkflow({
             "runs-on": BUILD_PACKAGES_RUNNER,
             checkout: { path: DIR_WEBINY_JS },
             steps: [
+                {
+                    name: "test",
+                    run: `echo "\${{ needs.constants.outputs.changed-packages }}"`
+                },
                 ...yarnCacheSteps,
                 ...globalBuildCacheSteps,
                 ...installBuildSteps,
