@@ -22,6 +22,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](/docs/CODE_OF_CONDUCT.md)
 [![Join our Slack community https://www.webiny.com/slack](https://img.shields.io/badge/Slack-Join%20our%20community!-orange)](https://www.webiny.com/slack)
+[![Gurubase](https://img.shields.io/badge/Gurubase-Ask%20Webiny%20Guru-006BFF)](https://gurubase.io/g/webiny)
 
 </p>
 
