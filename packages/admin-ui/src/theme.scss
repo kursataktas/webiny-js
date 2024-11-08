@@ -212,3 +212,9 @@
     --text-4xl-tracking: initial;
   }
 }
+
+@layer base {
+  * {
+    @apply antialiased;
+  }
+}

@@ -11,7 +11,35 @@ const meta: Meta<typeof Input> = {
     component: Input,
     tags: ["autodocs"],
     argTypes: {
-        onChange: { action: "onChange" }
+        onChange: { action: "onChange" },
+        type: {
+            control: "select",
+            options: [
+                "text",
+                "number",
+                "email",
+                "password",
+                "tel",
+                "url",
+                "search",
+                "date",
+                "datetime-local",
+                "month",
+                "week",
+                "time",
+                "color",
+                "file",
+                "checkbox",
+                "radio",
+                "range",
+                "hidden",
+                "button",
+                "submit",
+                "reset",
+                "image"
+            ],
+            defaultValue: "text"
+        }
     },
     parameters: {
         layout: "fullscreen"

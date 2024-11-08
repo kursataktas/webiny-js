@@ -30,32 +30,32 @@ const iconVariants = cva("absolute transform top-1/2 -translate-y-1/2 fill-neutr
         {
             inputSize: "md",
             position: "leading",
-            class: "left-sm-plus"
+            class: "left-[calc(theme(spacing.sm-plus)-theme(borderWidth.sm))]"
         },
         {
             inputSize: "md",
             position: "trailing",
-            class: "right-sm-plus"
+            class: "right-[calc(theme(spacing.sm-plus)-theme(borderWidth.sm))]"
         },
         {
             inputSize: "lg",
             position: "leading",
-            class: "left-sm-plus"
+            class: "left-[calc(theme(spacing.sm-plus)-theme(borderWidth.sm))]"
         },
         {
             inputSize: "lg",
             position: "trailing",
-            class: "right-sm-plus"
+            class: "right-[calc(theme(spacing.sm-plus)-theme(borderWidth.sm))]"
         },
         {
             inputSize: "xl",
             position: "leading",
-            class: "left-md"
+            class: "left-[calc(theme(spacing.md)-theme(borderWidth.sm))]"
         },
         {
             inputSize: "xl",
             position: "trailing",
-            class: "right-md"
+            class: "right-[calc(theme(spacing.md)-theme(borderWidth.sm))]"
         }
     ]
 });
@@ -80,13 +80,27 @@ const Icon = ({ icon, disabled, position, inputSize }: IconWrapperProps) => {
  * Input
  */
 const inputVariants = cva(
-    "flex w-full border-sm text-md file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground focus-visible:outline-none disabled:cursor-not-allowed",
+    [
+        "flex w-full border-sm text-md",
+        "focus-visible:outline-none",
+        "disabled:cursor-not-allowed",
+        "file:bg-transparent file:border-none file:text-sm file:font-semibold"
+    ],
     {
         variants: {
             size: {
-                md: "h-8 py-xs-plus px-sm-extra rounded-sm",
-                lg: "h-10 py-sm-plus px-sm-extra rounded-sm",
-                xl: "h-14 p-md rounded-md"
+                md: [
+                    "rounded-sm",
+                    "py-[calc(theme(padding.xs-plus)-theme(borderWidth.sm))] px-[calc(theme(padding.sm-extra)-theme(borderWidth.sm))]"
+                ],
+                lg: [
+                    "rounded-sm",
+                    "py-[calc(theme(padding.sm-plus)-theme(borderWidth.sm))] px-[calc(theme(padding.sm-extra)-theme(borderWidth.sm))]"
+                ],
+                xl: [
+                    "rounded-md leading-6",
+                    "py-[calc(theme(padding.md)-theme(borderWidth.sm))] px-[calc(theme(padding.md)-theme(borderWidth.sm))]"
+                ]
             },
             variant: {
                 primary: [
@@ -102,59 +116,77 @@ const inputVariants = cva(
                     "disabled:bg-neutral-disabled disabled:text-neutral-disabled disabled:placeholder:text-neutral-disabled"
                 ],
                 ghost: [
-                    "bg-neutral-base border-none text-neutral-strong placeholder:text-neutral-dimmed",
+                    "bg-neutral-base border-transparent text-neutral-strong placeholder:text-neutral-dimmed",
                     "hover:bg-neutral-light",
                     "focus:bg-neutral-light",
                     "disabled:bg-neutral-disabled disabled:text-neutral-disabled disabled:placeholder:text-neutral-disabled"
                 ]
             },
             iconPosition: {
-                leading: "pl-xl",
-                trailing: "pr-xl",
-                both: "pl-xl pr-xl"
+                leading: "pl-[calc(theme(padding.xl)-theme(borderWidth.sm))]",
+                trailing: "pr-[calc(theme(padding.xl)-theme(borderWidth.sm))]",
+                both: [
+                    "pl-[calc(theme(padding.xl)-theme(borderWidth.sm))]",
+                    "pr-[calc(theme(padding.xl)-theme(borderWidth.sm))]"
+                ]
             },
             invalid: {
-                true: "border-destructive-default hover:border-destructive-default focus:border-destructive-default disabled:border-destructive-default"
+                true: [
+                    "border-destructive-default",
+                    "hover:border-destructive-default",
+                    "focus:border-destructive-default",
+                    "disabled:border-destructive-default"
+                ]
             }
         },
-
         compoundVariants: [
             // Prevent text overlap with icons, add extra padding for icons.
             {
                 size: "lg",
                 iconPosition: "leading",
-                class: "pl-xl"
+                class: "pl-[calc(theme(padding.xl)-theme(borderWidth.sm))]"
             },
             {
                 size: "lg",
                 iconPosition: "trailing",
-                class: "pr-xl"
+                class: "pr-[calc(theme(padding.xl)-theme(borderWidth.sm))]"
             },
             {
                 size: "lg",
                 iconPosition: "both",
-                class: "pl-xl pr-xl"
+                class: [
+                    "pl-[calc(theme(padding.xl)-theme(borderWidth.sm))]",
+                    "pr-[calc(theme(padding.xl)-theme(borderWidth.sm))]"
+                ]
             },
             {
                 size: "xl",
                 iconPosition: "leading",
-                class: "pl-xxl"
+                class: "pl-[calc(theme(padding.xxl)+theme(padding.xs)-theme(borderWidth.sm))]"
             },
             {
                 size: "xl",
                 iconPosition: "trailing",
-                class: "pr-xxl"
+                class: "pr-[calc(theme(padding.xxl)+theme(padding.xs)-theme(borderWidth.sm))]"
             },
             {
                 size: "xl",
                 iconPosition: "both",
-                class: "pl-xxl pr-xxl"
+                class: [
+                    "pl-[calc(theme(padding.xxl)+theme(padding.xs)-theme(borderWidth.sm))]",
+                    "pr-[calc(theme(padding.xxl)+theme(padding.xs)-theme(borderWidth.sm))]"
+                ]
             },
             // Add specific classNames in case of invalid `ghost` input.
             {
                 variant: "ghost",
                 invalid: true,
-                class: "border-none bg-destructive-subtle hover:bg-destructive-subtle focus:bg-destructive-subtle disabled:bg-destructive-subtle"
+                class: [
+                    "border-none bg-destructive-subtle",
+                    "hover:bg-destructive-subtle",
+                    "focus:bg-destructive-subtle",
+                    "disabled:bg-destructive-subtle"
+                ]
             }
         ],
         defaultVariants: {
